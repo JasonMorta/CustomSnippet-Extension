@@ -1,0 +1,34 @@
+{
+    "manifest_version": 3,
+    "version": "1.0",
+    "name": "Super Snippet",
+    "author": "J.Morta",
+    "description": "Create a custom snippet",
+    "permissions": ["tabs","storage", "activeTab", "scripting"],
+    "background": {
+        "service_worker": "./backgroundPage.js"
+    },
+    "content_scripts":[
+        {
+            "matches": ["https://*.hyperiondev.cogrammar.com/reviewer/generate_review/*", 
+            "https://*.hyperiondev.cogrammar.com/reviewer/generate_dfe_review/*"],
+            "js": ["./content.js"],
+            "css": ["./style.css"]
+        }
+    ],
+
+    "action": {
+        "default_popup": "./popup.html",
+        "default_title": "StudentWatch"
+       
+    },
+    "icons": {
+        "16": "icon16.png",
+        "32": "icon32.png",
+        "48": "icon48.png",
+        "128": "icon128.png"
+      }
+
+
+    
+}

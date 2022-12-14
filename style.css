@@ -1,0 +1,59 @@
+
+
+ body {
+    background-color: rgb(12 12 12);
+    color: #D3C4AD;
+    font-family: system-ui, sans-serif;
+ }
+
+ .container {
+    display: flex;
+    flex-direction: column;
+    background-color: #2A282B;
+    text-align: left;
+    flex-wrap: wrap;
+    align-items: center;
+    max-width: 350px;
+    transition: .3s;
+    position: relative;
+ }
+
+ .my-snippet {
+    position: relative;
+    width: 95%;
+    padding: 0px 5px;
+ }
+
+ .my-snippet:hover {
+    background-color: #3a3a3a46;
+ }
+
+
+ h2 {
+    margin-bottom: 0px;
+    width: 90%;
+    border-radius: 3px;
+    padding: 5px 5px;
+    margin: 10px 0px 0px 0px;
+ }
+
+ .paragraph-container {
+    width: 90%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 15px 0px;
+ }
+
+ .delete-snip {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    display: none;
+ }
+
+ .my-snippet:hover  .delete-snip {
+ display: block;
+}
