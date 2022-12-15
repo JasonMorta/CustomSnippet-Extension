@@ -16,16 +16,6 @@ main.className = "dom-body"
 let field = document.querySelectorAll('.form-control')
 //console.log('field', field)
 
-for (let i = 0; i < field.length; i++) {
-    // field[i].addEventListener('click', ()=>{
-    //     //alert("hello")
-      
-           
-    // })
-   //console.log( field[i]);
-    
-}
-
 
 //get snippets from localStorage
 getStorage()
@@ -50,26 +40,37 @@ function snips() {
 
     for (let i = 0; i < snippetArray.length; i++) {
         //snippet
+        let snipCon = document.createElement("div")
+        snipCon.className = "snippet-container"
+
         let snip = document.createElement("p");
         snip.className = "my-snippet";
         snip.textContent = snippetArray[i];
-        snip.addEventListener("click", () => {
-         // console.log(snippetArray[i]);
-        });
-    
+        snipCon.appendChild(snip);
         //dele snippet btn
         let del = document.createElement("button");
         del.textContent = "del";
-        del.className = "delete-snip";
-        del.addEventListener("click", () => {
+        del.className = "delete-snip snip-btn";
+        title = "double click to delete"
+        del.addEventListener("dblclick", () => {
           snippetArray.splice(snippetArray.indexOf(snippetArray[i]), 1);
           localStorage.setItem("snippet", JSON.stringify(snippetArray));
           getStorage()
           //console.log(snippetArray);
         });
-        snip.appendChild(del);
+        snipCon.appendChild(del);
     
-        list.appendChild(snip);
+
+        //copy text to clipboard
+        let copy = document.createElement("button")
+        copy.className = "copy-snip snip-btn"
+        copy.textContent = "copy";
+        copy.addEventListener('click', (e) => {
+          // Copy the text inside the p tag
+          navigator.clipboard.writeText(snippetArray[i]);
+        })
+        snipCon.appendChild(copy);
+        list.appendChild(snipCon);
       }
 
 

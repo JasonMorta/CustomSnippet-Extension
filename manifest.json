@@ -6,7 +6,7 @@
     "description": "Create a custom snippet",
     "permissions": ["tabs","storage", "activeTab", "scripting"],
     "background": {
-        "service_worker": "background.js"
+        "js": ["background.js"]
     },
     "content_scripts":[
         {

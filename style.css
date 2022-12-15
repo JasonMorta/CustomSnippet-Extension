@@ -8,34 +8,37 @@
  }
 
  .container {
-    display: flex;
-    flex-direction: column;
-    background-color: #2A282B;
-    text-align: left;
-    flex-wrap: wrap;
-    align-items: center;
-    max-width: 350px;
-    transition: .3s;
-    position: relative;
+   display: flex;
+   flex-direction: column;
+   background-color: #2A282B;
+   text-align: left;
+   flex-wrap: wrap;
+   align-items: flex-start;
+   max-width: 21.875rem;
+   transition: .3s;
+   position: relative;
+   padding: 0.3125rem;
  }
 
+ .snippet-container {
+   position: relative;
+ }
  .my-snippet {
-    position: relative;
     width: 95%;
-    padding: 0px 5px;
+    
  }
 
- .my-snippet:hover {
+ .snippet-container:hover {
     background-color: #3a3a3a46;
  }
 
 
  h2 {
-    margin-bottom: 0px;
+    margin-bottom: 0rem;
     width: 90%;
-    border-radius: 3px;
-    padding: 5px 5px;
-    margin: 10px 0px 0px 0px;
+    border-radius: 0.1875rem;
+    padding: 0.3125rem 0.3125rem;
+    margin: 0.625rem 0rem 0rem 0rem;
  }
 
  .paragraph-container {
@@ -45,18 +48,26 @@
     flex-wrap: wrap;
     justify-content: flex-start;
     align-items: flex-start;
-    padding: 15px 0px;
+    padding: 0.9375rem 0rem;
  }
 
+ .snip-btn {
+   display: none;
+   user-select: none;
+   -webkit-user-select: none;
+ }
  .delete-snip {
     position: absolute;
     bottom: 0;
     right: 0;
-    display: none;
-    user-select: none;
-    -webkit-user-select: none;
  }
 
- .my-snippet:hover  .delete-snip {
+ .copy-snip {
+   position: absolute;
+   bottom: 0;
+   right: 3rem;
+ }
+
+ .snippet-container:hover  .snip-btn {
  display: block;
 }
