@@ -6,12 +6,14 @@
     "description": "Create a custom snippet",
     "permissions": ["tabs","storage", "activeTab", "scripting"],
     "background": {
-        "service_worker": "./backgroundPage.js"
+        "service_worker": "background.js"
     },
     "content_scripts":[
         {
-            "matches": ["https://*.hyperiondev.cogrammar.com/reviewer/generate_review/*", 
-            "https://*.hyperiondev.cogrammar.com/reviewer/generate_dfe_review/*"],
+            "matches": [
+                "https://*.hyperiondev.cogrammar.com/reviewer/generate_review/*", 
+                "https://*.hyperiondev.cogrammar.com/reviewer/generate_dfe_review/*"
+            ],
             "js": ["./content.js"],
             "css": ["./style.css"]
         }
@@ -19,7 +21,7 @@
 
     "action": {
         "default_popup": "./popup.html",
-        "default_title": "StudentWatch"
+        "default_title": "Super Snippet"
        
     },
     "icons": {

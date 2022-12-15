@@ -53,6 +53,8 @@
     bottom: 0;
     right: 0;
     display: none;
+    user-select: none;
+    -webkit-user-select: none;
  }
 
  .my-snippet:hover  .delete-snip {

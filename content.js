@@ -1,29 +1,27 @@
 let textBox = document.querySelector("#textarea");
-let saveBtn = document.querySelector("#save-btn");
+
 let list = document.querySelector(".inner");
 let mainSnip = document.querySelector('.main')
 console.log('mainSnip', mainSnip)
 let snippetArray = [];
 
 let main = document.getElementsByTagName("body")
+
 console.log('main', main)
 
-
-
-
-
+main.className = "dom-body"
+          
 
 //get the cogrammer textfield
 let field = document.querySelectorAll('.form-control')
 //console.log('field', field)
 
 for (let i = 0; i < field.length; i++) {
-    field[i].addEventListener('click', ()=>{
-        alert("hello")
+    // field[i].addEventListener('click', ()=>{
+    //     //alert("hello")
       
-           main.appendChild(mainSnip)
-          
-    })
+           
+    // })
    //console.log( field[i]);
     
 }
@@ -39,6 +37,7 @@ function getStorage() {
 }
 
 //save custom snippet to local storage
+let saveBtn = document.querySelector("#save-btn")
 saveBtn.addEventListener("click", function () {
   snippetArray.unshift(textBox.value);
   localStorage.setItem("snippet", JSON.stringify(snippetArray));
@@ -74,5 +73,5 @@ function snips() {
       }
 
 
-
+      
 }
