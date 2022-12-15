@@ -7,13 +7,28 @@
     margin: 0;
  }
 
+ /* Hide scrollbar for Chrome, Safari and Opera */
+body::-webkit-scrollbar {
+   display: none;
+ }
+ 
+ /* Hide scrollbar for IE, Edge and Firefox */
+ body {
+   -ms-overflow-style: none;  /* IE and Edge */
+   scrollbar-width: none;  /* Firefox */
+ }
+
+ #textarea {
+  min-width: 270px;
+ }
+
  .container {
    display: flex;
    flex-direction: column;
    background-color: #2A282B;
    text-align: left;
    flex-wrap: wrap;
-   align-items: flex-start;
+   align-items: center;
    max-width: 21.875rem;
    transition: .3s;
    position: relative;
@@ -22,10 +37,32 @@
 
  .snippet-container {
    position: relative;
+   width: 100%;
  }
  .my-snippet {
     width: 95%;
-    
+ }
+
+ .snippet-container button {
+   font-size: smaller;
+   cursor: pointer;
+ }
+ .move-snip {
+   position: absolute;
+   right: 0;
+   top: 0;
+   transform: scale(1) rotate(90deg);
+   cursor: pointer;
+ }
+
+ .move-snip:hover {
+   transform: scale(1.01) rotate(90deg);
+   cursor: pointer;
+ }
+
+ .move-snip:active {
+   transform: scale(0.89) rotate(90deg);
+   cursor: pointer;
  }
 
  .snippet-container:hover {
