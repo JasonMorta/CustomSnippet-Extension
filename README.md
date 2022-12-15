@@ -14,9 +14,7 @@ Create and save your own snippets in the browser local storage.
 ```
 #### When on the review page, the button will automatically appear.
     
-## ATTENTION!
-
-#### This is still an early release. More updates will be made.
+## Features
 
 - Add your own text. 
 - Stored in local storage.
