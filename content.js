@@ -30,10 +30,13 @@ function getStorage() {
 let saveBtn = document.querySelector("#save-btn")
 saveBtn.className="btn-grad"
 saveBtn.addEventListener("click", function () {
-  snippetArray.unshift(textBox.value);
-  localStorage.setItem("snippet", JSON.stringify(snippetArray));
-  snips()
-  textBox.value = ""
+  if (!textBox.value == " "){
+    snippetArray.unshift(textBox.value);
+    localStorage.setItem("snippet", JSON.stringify(snippetArray));
+    snips()
+    textBox.value = ""
+  }
+
 });
 
 //CREATE snippet list
@@ -51,8 +54,10 @@ function snips() {
         snipCon.appendChild(snip);
 
         //DELETE snippet btn
-        let del = document.createElement("button");
-        del.textContent = "del";
+        let del = document.createElement("img");
+        del.src="./del.png"
+        del.alt="delete"
+        del.title="Delete"
         del.className = "delete-snip snip-btn";
         title = "double click to delete"
         del.addEventListener("dblclick", () => {
@@ -64,9 +69,11 @@ function snips() {
         snipCon.appendChild(del);
     
         //COPY text to clipboard
-        let copy = document.createElement("button")
+        let copy = document.createElement("img")
         copy.className = "copy-snip snip-btn"
-        copy.textContent = "copy";
+        copy.src="./copy.png"
+        copy.alt="copy"
+        copy.title="Copy"
         copy.addEventListener('click', (e) => {
           // Copy the text inside the p tag
           navigator.clipboard.writeText(snippetArray[i]);
@@ -78,6 +85,7 @@ function snips() {
         up.src="./up.png"
         up.className="move-snip snip-btn"
         up.alt="up"
+        up.title="Move up"
         up.addEventListener('click', ()=>{
        
             //get selected snip index

@@ -44,21 +44,23 @@ body {
   width: 95%;
 }
 
-.snippet-container button {
+.snippet-container img {
   font-size: smaller;
   cursor: pointer;
+  background-color: #2a282b;
+  border-radius: 3px;
 }
 
 .move-snip {
   position: absolute;
   right: 0;
   top: 0;
-  transform: scale(1) rotate(90deg);
+ 
   cursor: pointer;
 }
 
 .move-snip:hover {
-  transform: scale(1.01) rotate(90deg);
+ 
   cursor: pointer;
 }
 
@@ -244,7 +246,7 @@ h2 {
   transition: 0.5s;
   background-size: 200% auto;
   color: white;
-  box-shadow: 0 0 17px -8px #eee;
+  box-shadow: 0 0 17px -11px #eee;
   border-radius: 10px;
   display: block;
   z-index: 1;
