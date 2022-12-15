@@ -28,6 +28,7 @@ function getStorage() {
 
 //SAVE custom snippet to local storage
 let saveBtn = document.querySelector("#save-btn")
+saveBtn.className="btn-grad"
 saveBtn.addEventListener("click", function () {
   snippetArray.unshift(textBox.value);
   localStorage.setItem("snippet", JSON.stringify(snippetArray));
