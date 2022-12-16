@@ -1,28 +1,32 @@
-let copyThis = "";
+let copyThis = ""
 let snippetArray = [];
 
 let textBox = document.querySelector("#textarea");
-textBox.addEventListener("input", () => {
+textBox.addEventListener('input', ()=>{
   //After loosing focus the input text will still persist
-  localStorage.setItem("snipInput", JSON.stringify(textBox.value));
-});
+  localStorage.setItem("snipInput", JSON.stringify(textBox.value)) 
+}
+)
 
 let list = document.querySelector(".inner");
-let mainSnip = document.querySelector(".main");
-console.log("mainSnip", mainSnip);
+let mainSnip = document.querySelector('.main')
+console.log('mainSnip', mainSnip)
 
-let main = document.getElementsByTagName("body");
 
-console.log("main", main);
+let main = document.getElementsByTagName("body")
 
-main.className = "dom-body";
+console.log('main', main)
+
+main.className = "dom-body"
+          
 
 //get the cogrammer textfield
-let field = document.querySelectorAll(".form-control");
+let field = document.querySelectorAll('.form-control')
 //console.log('field', field)
 
+
 //get snippets from localStorage
-getStorage();
+getStorage()
 function getStorage() {
   if (localStorage.getItem("snippet") != null) {
     snippetArray = JSON.parse(localStorage.getItem("snippet"));
@@ -32,96 +36,100 @@ function getStorage() {
 }
 
 //SAVE custom snippet to local storage
-let saveBtn = document.querySelector("#save-btn");
-saveBtn.className = "btn-grad";
+let saveBtn = document.querySelector("#save-btn")
+saveBtn.className="btn-grad"
 saveBtn.addEventListener("click", function () {
-  if (!textBox.value == " ") {
+  if (!textBox.value == " "){
     snippetArray.unshift(textBox.value);
     localStorage.setItem("snippet", JSON.stringify(snippetArray));
-    snips();
-    textBox.value = "";
+    snips()
+    textBox.value = ""
   }
-  textBox.value = "";
-  localStorage.setItem("snipInput", " ");
+  textBox.value = ""
+  localStorage.setItem("snipInput", " ")
 });
 
 //CREATE snippet list
 function snips() {
-  list.innerHTML = "";
+    list.innerHTML = ""
 
-  for (let i = 0; i < snippetArray.length; i++) {
-    //snippet
-    let snipCon = document.createElement("div");
-    snipCon.className = "snippet-container";
+    for (let i = 0; i < snippetArray.length; i++) {
+        //snippet
+        let snipCon = document.createElement("div")
+        snipCon.className = "snippet-container"
 
-    let snip = document.createElement("p");
-    snip.className = "my-snippet";
-    snip.innerHTML = snippetArray[i];
-    snipCon.appendChild(snip);
+        let snip = document.createElement("p");
+        snip.className = "my-snippet";
+        snip.innerHTML = snippetArray[i];
+        snipCon.appendChild(snip);
 
-    //DELETE snippet btn
-    let del = document.createElement("img");
-    del.src = "./del.png";
-    del.alt = "delete";
-    del.title = "Delete";
-    del.className = "delete-snip snip-btn";
-    title = "double click to delete";
-    del.addEventListener("dblclick", () => {
-      snippetArray.splice(snippetArray.indexOf(snippetArray[i]), 1);
-      localStorage.setItem("snippet", JSON.stringify(snippetArray));
-      getStorage();
-      //console.log(snippetArray);
-    });
-    snipCon.appendChild(del);
+        //DELETE snippet btn
+        let del = document.createElement("img");
+        del.src="./del.png"
+        del.alt="delete"
+        del.title="Delete"
+        del.className = "delete-snip snip-btn";
+        title = "double click to delete"
+        del.addEventListener("dblclick", () => {
+          snippetArray.splice(snippetArray.indexOf(snippetArray[i]), 1);
+          localStorage.setItem("snippet", JSON.stringify(snippetArray));
+          getStorage()
+          //console.log(snippetArray);
+        });
+        snipCon.appendChild(del);
+    
+        //COPY text to clipboard
+        let copy = document.createElement("img")
+        copy.className = "copy-snip snip-btn"
+        copy.src="./copy.png"
+        copy.alt="copy"
+        copy.title="Copy"
+        copy.addEventListener('click', (e) => {
+          // Copy the text inside the p tag
+          //Use regEx to remove all the HTML elements from the string(.replace(/<.*>/,''))
+          //use regEx to remove the first line break from string(.replace(/\r?\n|\r/, ''))
+          copyThis = snippetArray[i].toString().replace(/<.*>/,'').replace(/\r?\n|\r/, '')
+          navigator.clipboard.writeText(copyThis);
+        })
+        snipCon.appendChild(copy);
 
-    //COPY text to clipboard
-    let copy = document.createElement("img");
-    copy.className = "copy-snip snip-btn";
-    copy.src = "./copy.png";
-    copy.alt = "copy";
-    copy.title = "Copy";
-    copy.addEventListener("click", (e) => {
-      // Copy the text inside the p tag
-      //Use regEx to remove all the HTML elements from the string(.replace(/<.*>/,''))
-      //use regEx to remove the first line break from string(.replace(/\r?\n|\r/, ''))
-      copyThis = snippetArray[i]
-        .toString()
-        .replace(/<.*>/, "")
-        .replace(/\r?\n|\r/, "");
-      navigator.clipboard.writeText(copyThis);
-    });
-    snipCon.appendChild(copy);
+        //MOVE snip up btn
+        let up = document.createElement("img")
+        up.src="./up.png"
+        up.className="move-snip snip-btn"
+        up.alt="up"
+        up.title="Move up"
+        up.addEventListener('click', ()=>{
+       
+            //get selected snip index
+            let fromIndex = snippetArray.indexOf(snippetArray[i])//index number
 
-    //MOVE snip up btn
-    let up = document.createElement("img");
-    up.src = "./up.png";
-    up.className = "move-snip snip-btn";
-    up.alt = "up";
-    up.title = "Move up";
-    up.addEventListener("click", () => {
-      //get selected snip index
-      let fromIndex = snippetArray.indexOf(snippetArray[i]); //index number
+            //extract the selected snip
+            let extracted = snippetArray.splice(fromIndex, 1, snippetArray[i]);
+      
+            //prevent reaching into index -1
+            if (!fromIndex-1 == -1) {
+            //replace selected index item with the previous index item,
+            //making both the same
+            snippetArray.splice(fromIndex, 1, snippetArray[fromIndex-1]);
 
-      //extract the selected snip
-      let extracted = snippetArray.splice(fromIndex, 1, snippetArray[i]);
+            //when selecting an item, target the previous ones index,
+            //and replace it with extracted snip
+            snippetArray.splice(fromIndex-1, 1, extracted);
+            }
+   
+ 
+      
+            //Cal updated list
+            localStorage.setItem("snippet", JSON.stringify(snippetArray));
+            getStorage()
+     
+        })
+        snipCon.appendChild(up);
 
-      //prevent reaching into index -1
-      if (!fromIndex - 1 == -1) {
-        //replace selected index item with the previous index item,
-        //making both the same
-        snippetArray.splice(fromIndex, 1, snippetArray[fromIndex - 1]);
-
-        //when selecting an item, target the previous ones index,
-        //and replace it with extracted snip
-        snippetArray.splice(fromIndex - 1, 1, extracted);
+        list.appendChild(snipCon);
       }
 
-      //Cal updated list
-      localStorage.setItem("snippet", JSON.stringify(snippetArray));
-      getStorage();
-    });
-    snipCon.appendChild(up);
 
-    list.appendChild(snipCon);
-  }
+      
 }
