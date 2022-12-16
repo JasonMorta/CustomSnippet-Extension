@@ -10,17 +10,14 @@
     },
     "content_scripts":[
         {
-            "matches": [
-                "https://*.hyperiondev.cogrammar.com/reviewer/generate_review/*", 
-                "https://*.hyperiondev.cogrammar.com/reviewer/generate_dfe_review/*"
-            ],
+            "matches": ["<all_urls>"],
             "js": ["./content.js"],
             "css": ["./style.css"]
         }
     ],
 
     "action": {
-        "default_popup": "./popup.html",
+        "default_popup": "popup.html",
         "default_title": "Super Snippet"
        
     },

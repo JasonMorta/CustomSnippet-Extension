@@ -95,8 +95,8 @@ h2 {
 
 .snip-btn {
   display: none;
-  user-select: none;
   -webkit-user-select: none;
+  user-select: none;
 }
 
 .snip-btn:active {
