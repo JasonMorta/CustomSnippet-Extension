@@ -49,6 +49,7 @@ body {
   cursor: pointer;
   background-color: #2a282b;
   border-radius: 3px;
+  transition: .2s;
 }
 
 .move-snip {
@@ -71,6 +72,7 @@ body {
 
 .snippet-container:hover {
   background-color: #3a3a3a46;
+  transition: .2s;
 }
 
 
@@ -95,6 +97,10 @@ h2 {
   display: none;
   user-select: none;
   -webkit-user-select: none;
+}
+
+.snip-btn:active {
+  transform: scale(0.9);
 }
 
 .delete-snip {

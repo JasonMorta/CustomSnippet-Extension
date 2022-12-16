@@ -1,3 +1,6 @@
+let copyThis = ""
+let snippetArray = [];
+
 let textBox = document.querySelector("#textarea");
 textBox.addEventListener('input', ()=>{
   //After loosing focus the input text will still persist
@@ -8,7 +11,7 @@ textBox.addEventListener('input', ()=>{
 let list = document.querySelector(".inner");
 let mainSnip = document.querySelector('.main')
 console.log('mainSnip', mainSnip)
-let snippetArray = [];
+
 
 let main = document.getElementsByTagName("body")
 
@@ -43,6 +46,7 @@ saveBtn.addEventListener("click", function () {
     textBox.value = ""
   }
   textBox.value = ""
+  localStorage.setItem("snipInput", " ")
 });
 
 //CREATE snippet list
@@ -82,7 +86,10 @@ function snips() {
         copy.title="Copy"
         copy.addEventListener('click', (e) => {
           // Copy the text inside the p tag
-          navigator.clipboard.writeText(snippetArray[i].replace(/<.*>/,'').replace(/\r?\n|\r/, ''));
+          //Use regEx to remove all the HTML elements from the string(.replace(/<.*>/,''))
+          //use regEx to remove the first line break from string(.replace(/\r?\n|\r/, ''))
+          copyThis = snippetArray[i].toString().replace(/<.*>/,'').replace(/\r?\n|\r/, '')
+          navigator.clipboard.writeText(copyThis);
         })
         snipCon.appendChild(copy);
 
