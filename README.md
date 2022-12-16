@@ -1,5 +1,5 @@
 
-# Snips v1.0
+# Snips v0.1.1-alpha
 Create and save your own snippets in the browser local storage.
 
 ## Installation
@@ -18,6 +18,16 @@ Create and save your own snippets in the browser local storage.
 - Add your own text. 
 - Stored in local storage.
 - Each snippet can be copied, deleted and moved up the list. 
+- add custom THML/CSS the following way:
+```bash
+All text are palaced inside the <p> tag, adding header tags will not work.
+Instead do this:
+
+<b style='color: red'>Heading</b><br>
+
+Adding <br> will add a line break, placing the heading above your text.
+⚠ only use single quotes inside elements.
+```
 
 ## Tech Stack
 
