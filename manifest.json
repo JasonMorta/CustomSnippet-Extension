@@ -10,7 +10,10 @@
     },
     "content_scripts":[
         {
-            "matches": ["<all_urls>"],
+            "matches": [
+                "https://*.hyperiondev.cogrammar.com/reviewer/generate_review/*", 
+                "https://*.hyperiondev.cogrammar.com/reviewer/generate_dfe_review/*"
+            ],
             "js": ["content.js"],
             "css": ["style.css"]
         }
