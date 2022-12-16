@@ -1,4 +1,9 @@
 let textBox = document.querySelector("#textarea");
+textBox.addEventListener('input', ()=>{
+  //After loosing focus the input text will still persist
+  localStorage.setItem("snipInput", JSON.stringify(textBox.value)) 
+}
+)
 
 let list = document.querySelector(".inner");
 let mainSnip = document.querySelector('.main')
@@ -22,6 +27,7 @@ getStorage()
 function getStorage() {
   if (localStorage.getItem("snippet") != null) {
     snippetArray = JSON.parse(localStorage.getItem("snippet"));
+    textBox.value = JSON.parse(localStorage.getItem("snipInput"));
     snips();
   }
 }
@@ -36,7 +42,7 @@ saveBtn.addEventListener("click", function () {
     snips()
     textBox.value = ""
   }
-
+  textBox.value = ""
 });
 
 //CREATE snippet list
@@ -50,7 +56,7 @@ function snips() {
 
         let snip = document.createElement("p");
         snip.className = "my-snippet";
-        snip.textContent = snippetArray[i];
+        snip.innerHTML = snippetArray[i];
         snipCon.appendChild(snip);
 
         //DELETE snippet btn
@@ -76,7 +82,7 @@ function snips() {
         copy.title="Copy"
         copy.addEventListener('click', (e) => {
           // Copy the text inside the p tag
-          navigator.clipboard.writeText(snippetArray[i]);
+          navigator.clipboard.writeText(snippetArray[i].replace(/<.*>/,'').replace(/\r?\n|\r/, ''));
         })
         snipCon.appendChild(copy);
 
