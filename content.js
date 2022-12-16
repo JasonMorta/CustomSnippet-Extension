@@ -30,7 +30,7 @@ getStorage()
 function getStorage() {
   if (localStorage.getItem("snippet") != null) {
     snippetArray = JSON.parse(localStorage.getItem("snippet"));
-    textBox.value = JSON.parse(localStorage.getItem("snipInput"));
+    //textBox.value = JSON.parse(localStorage.getItem("snipInput"));
     snips();
   }
 }
