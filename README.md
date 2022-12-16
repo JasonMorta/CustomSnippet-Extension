@@ -27,7 +27,7 @@ Create and save your own snippets in the browser local storage.
 
 ## Screenshots
 
-![App Screenshot](https://github.com/JasonMorta/CustomSnippet-Extension/blob/main/Screenshot%202022-12-16%20165842.png)
+![App Screenshot](https://github.com/JasonMorta/CustomSnippet-Extension/blob/main/Screenshot.png)
 
 
 ## License
