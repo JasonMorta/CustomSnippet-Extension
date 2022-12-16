@@ -1,5 +1,5 @@
 
-# Snips v1.0
+# Snips v0.1.0
 Create and save your own snippets in the browser local storage.
 
 ## Installation
