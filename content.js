@@ -1,25 +1,18 @@
 let copyThis = ""
 let snippetArray = [];
 
-let textBox = document.querySelector("#textarea");
+let textBox = document.querySelector("#snips-textarea");
 textBox.addEventListener('input', ()=>{
   //After loosing focus the input text will still persist
   localStorage.setItem("snipInput", JSON.stringify(textBox.value)) 
 }
 )
 
-let list = document.querySelector(".inner");
-let mainSnip = document.querySelector('.main')
+let list = document.querySelector(".snips-inner");
+let mainSnip = document.querySelector('.snips-main')
 console.log('mainSnip', mainSnip)
 
-
-let main = document.getElementsByTagName("body")
-
-console.log('main', main)
-
-main.className = "dom-body"
           
-
 //get the cogrammer textfield
 let field = document.querySelectorAll('.form-control')
 //console.log('field', field)
@@ -36,7 +29,7 @@ function getStorage() {
 }
 
 //SAVE custom snippet to local storage
-let saveBtn = document.querySelector("#save-btn")
+let saveBtn = document.querySelector("#snips-save-btn")
 saveBtn.className="btn-grad"
 saveBtn.addEventListener("click", function () {
   if (!textBox.value == " "){
