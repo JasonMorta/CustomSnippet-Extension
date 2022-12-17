@@ -32,12 +32,13 @@
   max-width: 21.875rem;
   transition: .3s;
   position: relative;
-  padding: 0.3125rem;
+  padding: 0.0625rem;
 }
 
 .snippet-container {
   position: relative;
   width: 100%;
+  padding: 3px;
 }
 
 .my-snippet {
@@ -50,6 +51,7 @@
   background-color: #2a282b;
   border-radius: 3px;
   transition: .2s;
+  transform: translate(-8px, 0px);
 }
 
 .move-snip {
@@ -73,6 +75,7 @@
 .snippet-container:hover {
   background-color: #3a3a3a46;
   transition: .2s;
+  padding: 3px;
 }
 
 
@@ -92,7 +95,7 @@
 }
 
 .snip-btn:active {
-  transform: scale(0.9);
+  transform: scale(0.89) translate(-8px, 0px);
 }
 
 .delete-snip {
@@ -111,10 +114,42 @@
   display: block;
 }
 
+.btn-grad {
+  background-image: linear-gradient(to right, #1e130c 0%, #9a8478 51%, #1e130c 100%);
+  margin: 2px 0px;
+  padding: 5px 10px;
+  text-align: center;
+  text-transform: uppercase;
+  transition: 0.5s;
+  background-size: 200% auto;
+  color: white;
+  box-shadow: 0 0 17px -11px #eee;
+  border-radius: 10px;
+  display: block;
+  z-index: 1;
+  border: 1px solid black;
+}
+
+.btn-grad:hover {
+  background-position: right center; /* change the direction of the change here */
+  color: #fff;
+  text-decoration: none;
+}
+
 
 .bounce-in-right {
 	-webkit-animation: bounce-in-right 1.1s both;
 	        animation: bounce-in-right 1.1s both;
+}
+
+.slide-out-left {
+	-webkit-animation: slide-out-left 0.4s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+	        animation: slide-out-left 0.4s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+}
+
+.slide-in-top {
+	-webkit-animation: slide-in-top 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+	        animation: slide-in-top 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
 }
 
 /* ----------------------------------------------
@@ -234,25 +269,67 @@
   }
 }
 
-         
-.btn-grad {
-  background-image: linear-gradient(to right, #1e130c 0%, #9a8478 51%, #1e130c 100%);
-  margin: 2px 0px;
-  padding: 5px 10px;
-  text-align: center;
-  text-transform: uppercase;
-  transition: 0.5s;
-  background-size: 200% auto;
-  color: white;
-  box-shadow: 0 0 17px -11px #eee;
-  border-radius: 10px;
-  display: block;
-  z-index: 1;
-  border: 1px solid black;
+/**
+ * ----------------------------------------
+ * animation slide-out-left
+ * ----------------------------------------
+ */
+ @-webkit-keyframes slide-out-left {
+  0% {
+    -webkit-transform: translateX(0);
+            transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: translateX(-1000px);
+            transform: translateX(-1000px);
+    opacity: 0;
+  }
+}
+@keyframes slide-out-left {
+  0% {
+    -webkit-transform: translateX(0);
+            transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: translateX(-1000px);
+            transform: translateX(-1000px);
+    opacity: 0;
+  }
 }
 
-.btn-grad:hover {
-  background-position: right center; /* change the direction of the change here */
-  color: #fff;
-  text-decoration: none;
+
+/**
+ * ----------------------------------------
+ * animation slide-in-top
+ * ----------------------------------------
+ */
+ @-webkit-keyframes slide-in-top {
+  0% {
+    -webkit-transform: translateY(-1000px);
+            transform: translateY(-1000px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+    opacity: 1;
+  }
 }
+@keyframes slide-in-top {
+  0% {
+    -webkit-transform: translateY(-1000px);
+            transform: translateY(-1000px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+
+         
+
