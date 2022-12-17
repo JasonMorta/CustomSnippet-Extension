@@ -13,14 +13,15 @@ Create and save your own snippets in the browser local storage.
 ```
 #### When on the review page, the button will automatically appear.
     
-## Features
+## Features / usage
 
 - Add your own text. 
 - Stored in local storage.
 - Each snippet can be copied, deleted and moved up the list. 
-- add custom THML/CSS the following way:
+- Double click icon to delete item.
+- Add custom HTML/CSS the following way:
 ```bash
-All text are palaced inside the <p> tag, adding header tags will not work.
+All text are palaced inside the <p> tag, adding header(H1) tags will not work.
 Instead do this:
 
 <b style='color: red'>Heading</b><br>
