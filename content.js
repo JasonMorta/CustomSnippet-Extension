@@ -36,6 +36,7 @@ saveBtn.addEventListener("click", function () {
     snippetArray.unshift(textBox.value);
     localStorage.setItem("snippet", JSON.stringify(snippetArray));
     snips()
+    
     textBox.value = ""
   }
   textBox.value = ""
@@ -64,9 +65,13 @@ function snips() {
         del.className = "delete-snip snip-btn";
         title = "double click to delete"
         del.addEventListener("dblclick", () => {
+          snipCon.className += " slide-out-left"
           snippetArray.splice(snippetArray.indexOf(snippetArray[i]), 1);
           localStorage.setItem("snippet", JSON.stringify(snippetArray));
-          getStorage()
+
+          setTimeout(() => {
+            getStorage()
+          }, 500);
           //console.log(snippetArray);
         });
         snipCon.appendChild(del);
