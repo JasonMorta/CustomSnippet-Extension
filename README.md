@@ -30,6 +30,8 @@ Adding <br> will add a line break, placing the heading above your text.
 ⚠ only use single quotes inside elements.
 ```
 
+- For quick access to extensions, create a shortcut: Inside extensions tab, select the menu from the top-left corner > keyboard shortcuts. I found "Ctrl + S" to work very well.
+
 ## Tech Stack
 
 **Client:** HTML/CSS, JavaScript, Chrome API
