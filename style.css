@@ -50,7 +50,7 @@
   cursor: pointer;
   background-color: #2a282b;
   border-radius: 3px;
-  transition: .2s;
+  transition: .1s;
   transform: translate(-8px, 0px);
 }
 
@@ -96,6 +96,7 @@
 
 .snip-btn:active {
   transform: scale(0.89) translate(-8px, 0px);
+  transition: .1s;
 }
 
 .delete-snip {
