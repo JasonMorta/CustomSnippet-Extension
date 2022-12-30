@@ -39,6 +39,7 @@
   position: relative;
   width: 100%;
   padding: 3px;
+  transition: 1s linear;
 }
 
 .my-snippet {
@@ -50,7 +51,7 @@
   cursor: pointer;
   background-color: #2a282b;
   border-radius: 3px;
-  transition: .1s;
+  transition: .2s ease-in;
   transform: translate(-8px, 0px);
 }
 
@@ -63,7 +64,6 @@
 }
 
 .move-snip:hover {
- 
   cursor: pointer;
 }
 
@@ -73,8 +73,8 @@
 }
 
 .snippet-container:hover {
-  background-color: #3a3a3a46;
-  transition: .2s;
+  background-color: #3a3a3aeb;
+  transition: .3s ease-in;
   padding: 3px;
 }
 
@@ -89,14 +89,21 @@
 }
 
 .snip-btn {
-  display: none;
+  display: block;
+  opacity: 0;
   -webkit-user-select: none;
   user-select: none;
+  transition: .1s linear;
+}
+
+.snippet-container:hover .snip-btn {
+  opacity: 1;
+  transition: .2s linear;
 }
 
 .snip-btn:active {
-  transform: scale(0.89) translate(-8px, 0px);
-  transition: .1s;
+  transform: translate(-8px, 0px);
+ 
 }
 
 .delete-snip {
@@ -111,9 +118,7 @@
   right: 3rem;
 }
 
-.snippet-container:hover .snip-btn {
-  display: block;
-}
+
 
 .btn-grad {
   background-image: linear-gradient(to right, #1e130c 0%, #9a8478 51%, #1e130c 100%);

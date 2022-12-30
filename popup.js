@@ -1,5 +1,14 @@
 let copyThis = ""
 let snippetArray = [];
+let data;
+
+
+// (async () => {
+//     const response = await chrome.runtime.sendMessage({greeting: "hello"});
+//     // do something with response here, not outside the function
+//     console.log(response);
+//   })();
+
 
 let textBox = document.querySelector("#snips-textarea");
 textBox.addEventListener('input', ()=>{
@@ -20,12 +29,18 @@ let field = document.querySelectorAll('.form-control')
 
 //get snippets from localStorage
 getStorage()
-function getStorage() {
+async function getStorage() {
   if (localStorage.getItem("snippet") != null) {
     snippetArray = JSON.parse(localStorage.getItem("snippet"));
     //textBox.value = JSON.parse(localStorage.getItem("snipInput"));
     snips();
   }
+
+
+  await chrome.storage.sync.get("contentData").then((result) => {
+    data = result})
+
+    console.log(data);
 }
 
 //SAVE custom snippet to local storage
@@ -46,16 +61,50 @@ saveBtn.addEventListener("click", function () {
 //CREATE snippet list
 function snips() {
     list.innerHTML = ""
-
+    let updatedText = ""
+    let splitSnip = []
+    let newSnip = ""
+    let prevVal = []
     for (let i = 0; i < snippetArray.length; i++) {
         //snippet
         let snipCon = document.createElement("div")
         snipCon.className = "snippet-container"
-
+        
         let snip = document.createElement("p");
         snip.className = "my-snippet";
+        snip.setAttribute("contenteditable", "true");
         snip.innerHTML = snippetArray[i];
+        prevVal[i] = snip.textContent//store current text in array
+        snip.addEventListener('blur', ()=>{
+            
+                    //ONLY UPDATE LIST IF CHANGES WERE MADE
+                  if (prevVal[i] != snip.textContent) {
+
+                     //EXTRACT UPDATED TEXT FROM SNIP ELEMENT
+                   updatedText = snip.textContent.split("\n")[1];
+
+                    //SPLIT SNIPPET CONTENT
+                    splitSnip = snip.innerHTML.split("\n")
+ 
+                    //UPDATE SNIP WITH NEW TEXT
+                    splitSnip[1] = updatedText
+                    newSnip = splitSnip.join().replace(",", "\n")
+                    snippetArray[i] = newSnip
+
+
+                    // UPDATE LOCAL STORAGE
+                    localStorage.setItem("snippet", JSON.stringify(snippetArray));
+
+                    //RERENDER LIST
+                    setTimeout(() => {
+                        getStorage()
+                  
+                    }, 500);
+                  }
+
+        })
         snipCon.appendChild(snip);
+        
 
         //DELETE snippet btn
         let del = document.createElement("img");
@@ -83,33 +132,39 @@ function snips() {
         copy.alt="copy"
         copy.title="Copy"
         copy.addEventListener('click', async (e) => {
-          const data = await chrome.storage.sync.get("contentData");
+            //copy.src=""
+            copy.src="./copyFill.png"
+            let trimmed1 = ""
+            let trimmed2 = ""
+            let nameOnly = ""
+            let trimmedT1 = ""
+            let count = 0
+                
 
-          // Copy the text inside the p tag
-          //Use regEx to remove all the HTML elements from the string(.replace(/<.*>/,''))
-          //use regEx to remove the first line break from string(.replace(/\r?\n|\r/, ''))
-          copyThis = snippetArray[i]
-            .toString()
-            .replace(/<.*>/, "")
-            .replace(/\r?\n|\r/, "");
+            // Copy the text inside the p tag
+            //Use regEx to remove all the HTML elements from the string(.replace(/<.*>/,''))
+            //use regEx to remove the first line break from string(.replace(/\r?\n|\r/, ''))
+            copyThis = snippetArray[i]
+                .toString()
+                .replace(/<.*>/, "")
+                .replace(/\r?\n|\r/, "");
 
-          //extract name only
-          let trimmed1 = data.contentData.names[0]
-            .replace("Student: ", "")
-            .trim();
-          let trimmed2 = trimmed1.split(" ");
-          let nameOnly = trimmed2[0];
+            //extract name only
+            console.log(data.contentData.names[0])
+            trimmed1 = data.contentData.names[0].replace("Student: ", "").trim();
+            trimmed2 = trimmed1.split(" ");
+            nameOnly = trimmed2[0];
 
-          //Extract the task topic name
-          let trimmedT1 = data.contentData.names[2].trim();
+            //Extract the task topic name
+            trimmedT1 = data.contentData.names[2].trim();
 
-          //Get the index of the second "-" in stringArray
-          function getPosition(trimmedT1, string, index) {
-            return trimmedT1.split(string, index).join(string).length;
+            //Get the index of the second "-" in stringArray
+            function getPosition(trimmedT1, string, index) {
+                return trimmedT1.split(string, index).join(string).length;
           }//returns the index number for "-"
 
                     //Count the "-" occurrence
-                    let count = 0;
+                    
                     for (let i = 0; i < trimmedT1.length; i++) {
                       if (trimmedT1.charAt(i) === "-") {
                         count++;
@@ -125,9 +180,12 @@ function snips() {
 
           //add student name and/or topic name to snippet text
           let filteredName = copyThis.replace("{name}", nameOnly.trim());
+         
           let filterComplete = filteredName.replace("{topic}",topic.toLowerCase().trim());
+          console.log('filterComplete', filterComplete)
 
           navigator.clipboard.writeText(filterComplete);
+          
         })
         snipCon.appendChild(copy);
 
@@ -167,6 +225,11 @@ function snips() {
 
         list.appendChild(snipCon);
       }
+
+      //Add a line at bottom of list
+      let lastSnip = document.querySelectorAll(".snippet-container")
+      lastSnip[lastSnip.length-1].style = "border-bottom: 3px solid #f44336;"
+
 
 
       
