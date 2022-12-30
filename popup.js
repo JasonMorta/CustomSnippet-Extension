@@ -7,6 +7,7 @@ let nameOnly = "";
 let trimmedT1 = "";
 let count = 0;
 
+//Save the input values to storage
 let textBox = document.querySelector("#snips-textarea");
 textBox.addEventListener("input", () => {
   //After loosing focus the input text will still persist
@@ -31,12 +32,20 @@ let field = document.querySelectorAll(".form-control");
 //get snippets from localStorage
 getStorage();
 async function getStorage() {
-  if (localStorage.getItem("snippet") != null) {
-    snippetArray = JSON.parse(localStorage.getItem("snippet"));
+
+  await chrome.storage.sync.get(["snippet"]).then((result) => {
+    snippetArray = result.snippet
+    console.log('snippetArray', snippetArray)
+  });
+
+  if (snippetArray != null) {
+    // JSON.parse(localStorage.getItem("snippet"));
+    //console.log( snippetArray)
     if (localStorage.getItem("snipInput") != "") {
       textBox.value = JSON.parse(localStorage.getItem("snipInput"));
-      console.log(localStorage.getItem("snipInput"));
+      //console.log(localStorage.getItem("snipInput"));
     }
+  
 
     snips();
   }
@@ -51,16 +60,17 @@ async function getStorage() {
 //SAVE custom snippet to local storage
 let saveBtn = document.querySelector("#snips-save-btn");
 saveBtn.className = "btn-grad";
-saveBtn.addEventListener("click", function () {
+saveBtn.addEventListener("click", async function () {
   if (!textBox.value == " ") {
     snippetArray.unshift(textBox.value);
-    localStorage.setItem("snippet", JSON.stringify(snippetArray));
-    snips();
+  //localStorage.setItem("snippet", JSON.stringify(snippetArray));
+   await chrome.storage.sync.set({ snippet: snippetArray })
+    
+   snips();
 
     textBox.value = "";
   }
   textBox.value = "";
-  localStorage.setItem("snipInput", JSON.stringify(""));
 });
 
 //CREATE snippet list
@@ -85,7 +95,7 @@ function snips() {
     snip.addEventListener("click", () => {
       fader("fade-snip-btn");
     });
-    snip.addEventListener("blur", () => {
+    snip.addEventListener("blur", async () => {
       //remove opacity from btns
       del.classList.remove("fade-snip-btn");
       copy.classList.remove("fade-snip-btn");
@@ -104,7 +114,7 @@ function snips() {
         snippetArray[i] = newSnip;
 
         // UPDATE LOCAL STORAGE
-        localStorage.setItem("snippet", JSON.stringify(snippetArray));
+        await chrome.storage.sync.set({ snippet: snippetArray })
 
         //RERENDER LIST
         setTimeout(() => {
@@ -124,10 +134,10 @@ function snips() {
       del.classList.add(className);
     }
     title = "double click to delete";
-    del.addEventListener("dblclick", () => {
+    del.addEventListener("dblclick", async () => {
       snipCon.className += " slide-out-left";
       snippetArray.splice(snippetArray.indexOf(snippetArray[i]), 1);
-      localStorage.setItem("snippet", JSON.stringify(snippetArray));
+      await chrome.storage.sync.set({ snippet: snippetArray })
 
       setTimeout(() => {
         getStorage();
@@ -210,7 +220,7 @@ function snips() {
     up.className = "move-snip snip-btn";
     up.alt = "up";
     up.title = "Move up";
-    up.addEventListener("click", () => {
+    up.addEventListener("click", async () => {
       //get selected snip index
       let fromIndex = snippetArray.indexOf(snippetArray[i]); //index number
 
@@ -228,9 +238,9 @@ function snips() {
         snippetArray.splice(fromIndex - 1, 1, extracted);
       }
 
-      //Cal updated list
-      localStorage.setItem("snippet", JSON.stringify(snippetArray));
-      getStorage();
+      //Call updated list
+      await chrome.storage.sync.set({ snippet: snippetArray })
+      await getStorage();
     });
 
     //fadeout the buttons when editing snip
@@ -246,6 +256,6 @@ function snips() {
   }
 
   //Add a line at bottom of list
-  let lastSnip = document.querySelectorAll(".snippet-container");
-  lastSnip[lastSnip.length - 1].style = "border-bottom: 3px solid #f44336;";
+  // let lastSnip = document.querySelectorAll(".snippet-container");
+  // lastSnip[lastSnip.length - 1].style = "border-bottom: 3px solid #f44336;";
 } //create snippet end
