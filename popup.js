@@ -1,6 +1,6 @@
 let copyThis = "";
 let snippetArray = [];
-let data;
+let data = null;
 let trimmed1 = "";
 let trimmed2 = "";
 let nameOnly = "";
@@ -21,24 +21,28 @@ insertHeading.addEventListener("click", () => {
   textBox.value = "<b style='color:hotpink'>Heading</b><br>";
 });
 
+//het the html elements
 let list = document.querySelector(".snips-inner");
 let mainSnip = document.querySelector(".snips-main");
-console.log("mainSnip", mainSnip);
 
-//get the cogrammer textfield
-let field = document.querySelectorAll(".form-control");
-//console.log('field', field)
+
+
 
 //get snippets from localStorage
-getStorage();
+
 async function getStorage() {
 
-  await chrome.storage.sync.get(["snippet"]).then((result) => {
-    snippetArray = result.snippet
-    console.log('snippetArray', snippetArray)
+  await chrome.storage.sync.get("snippet").then((result) => {
+    console.log('result', result.snippet)
+
+    if (result.snippet != undefined) {
+        snippetArray = result.snippet
+        console.log('snippetArray', snippetArray)
+    }
+  
   });
 
-  if (snippetArray != null) {
+  if (snippetArray != undefined) {
     // JSON.parse(localStorage.getItem("snippet"));
     //console.log( snippetArray)
     if (localStorage.getItem("snipInput") != "") {
@@ -51,27 +55,30 @@ async function getStorage() {
   }
 
   await chrome.storage.sync.get("contentData").then((result) => {
-    data = result;
+    if (result.contentData != null) {
+        data = result
+        console.log('result', data)
+      } 
+    
+   
   });
 
   console.log(data);
-}
-
+}getStorage()
+//===================================SAVE============================================
 //SAVE custom snippet to local storage
 let saveBtn = document.querySelector("#snips-save-btn");
 saveBtn.className = "btn-grad";
-saveBtn.addEventListener("click", async function () {
-  if (!textBox.value == " ") {
+saveBtn.addEventListener("click", async () => {
+  if (textBox.value != " ") {
     snippetArray.unshift(textBox.value);
-  //localStorage.setItem("snippet", JSON.stringify(snippetArray));
-   await chrome.storage.sync.set({ snippet: snippetArray })
-    
-   snips();
-
+    await chrome.storage.sync.set({ snippet: snippetArray })
+    snips();
     textBox.value = "";
   }
   textBox.value = "";
 });
+//===============================================================================
 
 //CREATE snippet list
 function snips() {
@@ -170,8 +177,10 @@ function snips() {
       } else {
         copyThis = snippetArray[i].toString();
       }
-
-      //extract name only
+      console.log('data', data)
+      //Only works on the cogrammer URL. Filter out student and topic name
+      if (data != null ) {
+         //extract name only
       console.log(data.contentData.names[0]);
       trimmed1 = data.contentData.names[0].replace("Student: ", "").trim();
       trimmed2 = trimmed1.split(" ");
@@ -208,9 +217,13 @@ function snips() {
         "{topic}",
         topic.toLowerCase().trim()
       );
-      console.log("filterComplete", filterComplete);
+        navigator.clipboard.writeText(filterComplete)
+      } else {
+        
+        navigator.clipboard.writeText(copyThis)
+      }
 
-      navigator.clipboard.writeText(filterComplete);
+     ;
     });
     snipCon.appendChild(copy);
 
@@ -258,4 +271,6 @@ function snips() {
   //Add a line at bottom of list
   // let lastSnip = document.querySelectorAll(".snippet-container");
   // lastSnip[lastSnip.length - 1].style = "border-bottom: 3px solid #f44336;";
-} //create snippet end
+
+
+} //create snippet list end

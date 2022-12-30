@@ -6,10 +6,11 @@ async function changeHeading() {
   console.log('path', path)
 
   //Get all the names from elements
-  let studentBlock = document.querySelector(".student-block")
-  
+  //let studentBlock = document.querySelector(".student-block")
+  console.log('path.includes("hyperiondev.cogrammar.com")', path.includes("hyperiondev.cogrammar.com"))
   //FInd the student block, then send the data
-  if (studentBlock != null) {
+  if (path.includes("hyperiondev.cogrammar.com")) {
+
     console.log("Found student block");
     let names = document.querySelectorAll("h6");
     //Filter the names from h2 nodes then push into array
@@ -27,6 +28,7 @@ async function changeHeading() {
     await chrome.storage.sync.set({ contentData: data });
   } else {
     console.log("No student block found🚫");
+    await chrome.storage.sync.set({ contentData: null });
   }
 
 }
