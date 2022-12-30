@@ -8,6 +8,7 @@ async function changeHeading() {
   //Get all the names from elements
   let studentBlock = document.querySelector(".student-block")
   
+  //FInd the student block, then send the data
   if (studentBlock != null) {
     console.log("Found student block");
     let names = document.querySelectorAll("h6");
