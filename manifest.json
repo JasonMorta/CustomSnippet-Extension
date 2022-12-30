@@ -14,7 +14,7 @@
                 "<all_urls>"
             ],
             "js": ["content.js"],
-            "css": ["style.css"]
+            "css": ["popupstyle.css"]
         }
     ],
 

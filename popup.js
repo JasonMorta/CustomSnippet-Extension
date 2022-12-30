@@ -7,9 +7,6 @@ let nameOnly = "";
 let trimmedT1 = "";
 let count = 0;
 
-
-
-
 let textBox = document.querySelector("#snips-textarea");
 textBox.addEventListener("input", () => {
   //After loosing focus the input text will still persist
@@ -18,10 +15,10 @@ textBox.addEventListener("input", () => {
 });
 
 //insert CSS heading elements into textarea
-let insertHeading = document.querySelector('.add-heading')
-insertHeading.addEventListener('click', ()=>{
-  textBox.value = "<b style='color:hotpink'>Heading</b><br>"
-})
+let insertHeading = document.querySelector(".add-heading");
+insertHeading.addEventListener("click", () => {
+  textBox.value = "<b style='color:hotpink'>Heading</b><br>";
+});
 
 let list = document.querySelector(".snips-inner");
 let mainSnip = document.querySelector(".snips-main");
@@ -40,7 +37,7 @@ async function getStorage() {
       textBox.value = JSON.parse(localStorage.getItem("snipInput"));
       console.log(localStorage.getItem("snipInput"));
     }
-  
+
     snips();
   }
 
@@ -85,14 +82,14 @@ function snips() {
     prevVal[i] = snip.textContent; //store current text in array
 
     //fade out the buttons when editing snip
-    snip.addEventListener('click', ()=>{
-      fader("fade-snip-btn")
-    })
+    snip.addEventListener("click", () => {
+      fader("fade-snip-btn");
+    });
     snip.addEventListener("blur", () => {
       //remove opacity from btns
-      del.classList.remove("fade-snip-btn")
-      copy.classList.remove("fade-snip-btn")
-      up.classList.remove("fade-snip-btn")
+      del.classList.remove("fade-snip-btn");
+      copy.classList.remove("fade-snip-btn");
+      up.classList.remove("fade-snip-btn");
       //ONLY UPDATE LIST IF CHANGES WERE MADE
       if (prevVal[i] != snip.textContent) {
         //EXTRACT UPDATED TEXT FROM SNIP ELEMENT
@@ -117,16 +114,14 @@ function snips() {
     });
     snipCon.appendChild(snip);
 
-
-
     //DELETE snippet btn
     let del = document.createElement("img");
     del.src = "./del.png";
     del.alt = "delete";
     del.title = "Delete";
     del.className = "delete-snip snip-btn";
-    function fader(className){
-      del.classList.add(className)
+    function fader(className) {
+      del.classList.add(className);
     }
     title = "double click to delete";
     del.addEventListener("dblclick", () => {
@@ -159,13 +154,12 @@ function snips() {
       //If snip has no heading, don't remove line break
       if (snippetArray[i].toString().includes("<br>")) {
         copyThis = snippetArray[i]
-        .toString()
-        .replace(/<.*>/, "")
-        .replace(/\r?\n|\r/, "");
+          .toString()
+          .replace(/<.*>/, "")
+          .replace(/\r?\n|\r/, "");
       } else {
-        copyThis = snippetArray[i].toString()
+        copyThis = snippetArray[i].toString();
       }
-
 
       //extract name only
       console.log(data.contentData.names[0]);
@@ -188,7 +182,7 @@ function snips() {
           count++;
         }
       }
-      
+
       //Keep count less then 2 only if 3 "-" is found
       if (count > 2) {
         count = 2;
@@ -239,14 +233,13 @@ function snips() {
       getStorage();
     });
 
-
     //fadeout the buttons when editing snip
-    function fader(className){
-      up.classList.add(className)
-      copy.classList.add(className)
-      del.classList.add(className)
+    function fader(className) {
+      up.classList.add(className);
+      copy.classList.add(className);
+      del.classList.add(className);
     }
-    
+
     snipCon.appendChild(up);
 
     list.appendChild(snipCon);
@@ -255,9 +248,4 @@ function snips() {
   //Add a line at bottom of list
   let lastSnip = document.querySelectorAll(".snippet-container");
   lastSnip[lastSnip.length - 1].style = "border-bottom: 3px solid #f44336;";
-
-
-
 } //create snippet end
-
-
