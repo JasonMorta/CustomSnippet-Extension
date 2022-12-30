@@ -1,6 +1,6 @@
 
 # Snips v0.1.3-alpha
-Quicly save text for later use.
+Quickly save text for later use.
     
 ## Features / usage
 - Edit, delete, copy and move any snippet. 
@@ -14,7 +14,7 @@ Quicly save text for later use.
 - Double click delete to remove snippet..
 
 ### Add Color Headings+ 
-- Add a bold/CSS heading to snippets with regular HTML. The break element must be added at the end. This way everything before the break will be excluded when copied.
+- Add a bold/CSS heading to snippets with regular HTML. The break element must be added at the end. This way, everything before the break will be excluded when copied.
 
 ### Heading requirments.
 ```JavaScript
@@ -31,18 +31,17 @@ Quicly save text for later use.
 ---
 
 ### Edit text
-- Select the the snippet to edit. Changes apply when fucus is lost.
+- Select the snippet to edit. Changes apply when fucus is lost.
 ![App Screenshot](https://github.com/JasonMorta/CustomSnippet-Extension/blob/main/guide/edit.png)  
 
 ---
 
 ### Extension shortcut
-- For quick access to extensions, create a shortcut: Inside extensions tab, select the menu from the top-left corner > keyboard shortcuts. I found "Ctrl + S" to work very well.
+- For quick access to extensions, create a shortcut: Inside the extensions tab, select the menu from the top-left corner > keyboard shortcuts. I found "Ctrl + S" to work very well.
 
 --- 
 
 ## Installation
-
 
 1. Download the repo to your local machine.
 2. Unzip the repo content. 
