@@ -1,5 +1,5 @@
 
-# Snips v0.1.3-alpha
+# Snips v0.2.1-alpha
 Quickly save text for later use.
     
 ## Features / usage
