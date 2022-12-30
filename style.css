@@ -1,7 +1,18 @@
+@font-face {
+  font-family: FiraCode;
+  src: url(./font/FiraCode-VariableFont_wght.ttf);
+}
+
+body {
+  width: 400px;
+  font-family: FiraCode, system-ui, sans-serif;
+      font-size: smaller;
+}
+
+
 .snips-body {
   background-color: rgb(12 12 12);
   color: #D3C4AD;
-  font-family: system-ui, sans-serif;
   margin: 0;
 }
 
@@ -20,6 +31,13 @@
 
 #snips-textarea {
   min-width: 270px;
+  font-family: inherit;
+
+}
+
+#snips-textarea:focus-visible {
+  outline-color: #00bcd445;
+  background-color: #e1f5fe;
 }
 
 .snips-container {
@@ -29,10 +47,10 @@
   text-align: left;
   flex-wrap: wrap;
   align-items: center;
-  max-width: 21.875rem;
   transition: .3s;
   position: relative;
   padding: 0.0625rem;
+  width: 100%;
 }
 
 .snippet-container {
@@ -134,12 +152,26 @@
   display: block;
   z-index: 1;
   border: 1px solid black;
+  margin-top: 5px;
+    margin-bottom: 0;
 }
 
 .btn-grad:hover {
-  background-position: right center; /* change the direction of the change here */
-  color: #fff;
+  background-position: center;
+  color: #000;
   text-decoration: none;
+}
+
+.add-heading{
+  position: absolute;
+  right: 20px;
+  top: 10px;
+  font-size: x-small;
+  cursor: pointer;
+}
+
+.add-heading:hover{
+  color: white;
 }
 
 
