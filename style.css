@@ -44,12 +44,12 @@
 
 .my-snippet {
   width: 95%;
+  margin-left: 5px;
 }
 
 .snippet-container img {
   font-size: smaller;
   cursor: pointer;
-  background-color: #2a282b;
   border-radius: 3px;
   transition: .2s ease-in;
   transform: translate(-8px, 0px);
