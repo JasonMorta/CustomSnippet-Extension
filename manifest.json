@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "version": "0.1.1",
+    "version": "0.2.2",
     "name": "Super Snippet",
     "author": "J.Morta",
     "description": "Create a custom snippet",
