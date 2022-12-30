@@ -102,6 +102,10 @@
   align-items: flex-start;
 }
 
+.fade-snip-btn {
+  opacity: .3 !important;
+}
+
 .snip-btn {
   display: block;
   opacity: 0;
@@ -113,6 +117,12 @@
 .snippet-container:hover .snip-btn {
   opacity: 1;
   transition: .2s linear;
+}
+
+/* When buttons are fade, show them again */
+.snip-btn:hover {
+  opacity: 1 !important;
+
 }
 
 .snip-btn:active {

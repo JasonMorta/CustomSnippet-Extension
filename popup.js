@@ -9,6 +9,7 @@ let count = 0;
 
 
 
+
 let textBox = document.querySelector("#snips-textarea");
 textBox.addEventListener("input", () => {
   //After loosing focus the input text will still persist
@@ -82,7 +83,16 @@ function snips() {
     snip.setAttribute("contenteditable", "true");
     snip.innerHTML = snippetArray[i];
     prevVal[i] = snip.textContent; //store current text in array
+
+    //fade out the buttons when editing snip
+    snip.addEventListener('click', ()=>{
+      fader("fade-snip-btn")
+    })
     snip.addEventListener("blur", () => {
+      //remove opacity from btns
+      del.classList.remove("fade-snip-btn")
+      copy.classList.remove("fade-snip-btn")
+      up.classList.remove("fade-snip-btn")
       //ONLY UPDATE LIST IF CHANGES WERE MADE
       if (prevVal[i] != snip.textContent) {
         //EXTRACT UPDATED TEXT FROM SNIP ELEMENT
@@ -107,12 +117,17 @@ function snips() {
     });
     snipCon.appendChild(snip);
 
+
+
     //DELETE snippet btn
     let del = document.createElement("img");
     del.src = "./del.png";
     del.alt = "delete";
     del.title = "Delete";
     del.className = "delete-snip snip-btn";
+    function fader(className){
+      del.classList.add(className)
+    }
     title = "double click to delete";
     del.addEventListener("dblclick", () => {
       snipCon.className += " slide-out-left";
@@ -223,6 +238,15 @@ function snips() {
       localStorage.setItem("snippet", JSON.stringify(snippetArray));
       getStorage();
     });
+
+
+    //fadeout the buttons when editing snip
+    function fader(className){
+      up.classList.add(className)
+      copy.classList.add(className)
+      del.classList.add(className)
+    }
+    
     snipCon.appendChild(up);
 
     list.appendChild(snipCon);
@@ -231,6 +255,9 @@ function snips() {
   //Add a line at bottom of list
   let lastSnip = document.querySelectorAll(".snippet-container");
   lastSnip[lastSnip.length - 1].style = "border-bottom: 3px solid #f44336;";
+
+
+
 } //create snippet end
 
 
