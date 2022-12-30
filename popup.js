@@ -11,7 +11,6 @@ let count = 0;
 let textBox = document.querySelector("#snips-textarea");
 textBox.addEventListener("input", () => {
   //After loosing focus the input text will still persist
-  console.log(textBox.value);
   localStorage.setItem("snipInput", JSON.stringify(textBox.value));
 });
 
@@ -25,46 +24,34 @@ insertHeading.addEventListener("click", () => {
 let list = document.querySelector(".snips-inner");
 let mainSnip = document.querySelector(".snips-main");
 
-
-
-
 //get snippets from localStorage
 
 async function getStorage() {
-
   await chrome.storage.sync.get("snippet").then((result) => {
-    console.log('result', result.snippet)
 
     if (result.snippet != undefined) {
-        snippetArray = result.snippet
-        console.log('snippetArray', snippetArray)
+      snippetArray = result.snippet;
     }
-  
   });
 
   if (snippetArray != undefined) {
-    // JSON.parse(localStorage.getItem("snippet"));
-    //console.log( snippetArray)
     if (localStorage.getItem("snipInput") != "") {
       textBox.value = JSON.parse(localStorage.getItem("snipInput"));
-      //console.log(localStorage.getItem("snipInput"));
     }
-  
 
     snips();
   }
 
   await chrome.storage.sync.get("contentData").then((result) => {
     if (result.contentData != null) {
-        data = result
-        console.log('result', data)
-      } 
-    
-   
+      data = result;
+      console.log("result", data);
+    }
   });
 
   console.log(data);
-}getStorage()
+}
+getStorage();
 //===================================SAVE============================================
 //SAVE custom snippet to local storage
 let saveBtn = document.querySelector("#snips-save-btn");
@@ -72,11 +59,12 @@ saveBtn.className = "btn-grad";
 saveBtn.addEventListener("click", async () => {
   if (textBox.value != " ") {
     snippetArray.unshift(textBox.value);
-    await chrome.storage.sync.set({ snippet: snippetArray })
+    await chrome.storage.sync.set({ snippet: snippetArray });
     snips();
     textBox.value = "";
   }
   textBox.value = "";
+  localStorage.setItem("snipInput", JSON.stringify(textBox.value));
 });
 //===============================================================================
 
@@ -121,7 +109,7 @@ function snips() {
         snippetArray[i] = newSnip;
 
         // UPDATE LOCAL STORAGE
-        await chrome.storage.sync.set({ snippet: snippetArray })
+        await chrome.storage.sync.set({ snippet: snippetArray });
 
         //RERENDER LIST
         setTimeout(() => {
@@ -144,7 +132,7 @@ function snips() {
     del.addEventListener("dblclick", async () => {
       snipCon.className += " slide-out-left";
       snippetArray.splice(snippetArray.indexOf(snippetArray[i]), 1);
-      await chrome.storage.sync.set({ snippet: snippetArray })
+      await chrome.storage.sync.set({ snippet: snippetArray });
 
       setTimeout(() => {
         getStorage();
@@ -177,53 +165,50 @@ function snips() {
       } else {
         copyThis = snippetArray[i].toString();
       }
-      console.log('data', data)
+      console.log("data", data);
       //Only works on the cogrammer URL. Filter out student and topic name
-      if (data != null ) {
-         //extract name only
-      console.log(data.contentData.names[0]);
-      trimmed1 = data.contentData.names[0].replace("Student: ", "").trim();
-      trimmed2 = trimmed1.split(" ");
-      nameOnly = trimmed2[0];
+      if (data != null) {
+        //extract name only
+        console.log(data.contentData.names[0]);
+        trimmed1 = data.contentData.names[0].replace("Student: ", "").trim();
+        trimmed2 = trimmed1.split(" ");
+        nameOnly = trimmed2[0];
 
-      //Extract the task topic name
-      trimmedT1 = data.contentData.names[2].trim();
+        //Extract the task topic name
+        trimmedT1 = data.contentData.names[2].trim();
 
-      //Get the index of the second "-" in stringArray
-      function getPosition(trimmedT1, string, index) {
-        return trimmedT1.split(string, index).join(string).length;
-      } //returns the index number for "-"
+        //Get the index of the second "-" in stringArray
+        function getPosition(trimmedT1, string, index) {
+          return trimmedT1.split(string, index).join(string).length;
+        } //returns the index number for "-"
 
-      //Count the "-" occurrence
+        //Count the "-" occurrence
 
-      for (let i = 0; i < trimmedT1.length; i++) {
-        if (trimmedT1.charAt(i) === "-") {
-          count++;
+        for (let i = 0; i < trimmedT1.length; i++) {
+          if (trimmedT1.charAt(i) === "-") {
+            count++;
+          }
         }
-      }
 
-      //Keep count less then 2 only if 3 "-" is found
-      if (count > 2) {
-        count = 2;
-      }
+        //Keep count less then 2 only if 3 "-" is found
+        if (count > 2) {
+          count = 2;
+        }
 
-      //only get the topic by cutting away the rest of string.
-      let topic = trimmedT1.slice(getPosition(trimmedT1, "-", count) + 1);
+        //only get the topic by cutting away the rest of string.
+        let topic = trimmedT1.slice(getPosition(trimmedT1, "-", count) + 1);
 
-      //add student name and/or topic name to snippet text
-      let filteredName = copyThis.replace("{name}", nameOnly.trim());
+        //add student name and/or topic name to snippet text
+        let filteredName = copyThis.replace("{name}", nameOnly.trim());
 
-      let filterComplete = filteredName.replace(
-        "{topic}",
-        topic.toLowerCase().trim()
-      );
-        navigator.clipboard.writeText(filterComplete)
+        let filterComplete = filteredName.replace(
+          "{topic}",
+          topic.toLowerCase().trim()
+        );
+        navigator.clipboard.writeText(filterComplete);
       } else {
-        
-        navigator.clipboard.writeText(copyThis)
+        navigator.clipboard.writeText(copyThis);
       }
-
-     ;
     });
     snipCon.appendChild(copy);
 
@@ -252,7 +237,7 @@ function snips() {
       }
 
       //Call updated list
-      await chrome.storage.sync.set({ snippet: snippetArray })
+      await chrome.storage.sync.set({ snippet: snippetArray });
       await getStorage();
     });
 
@@ -269,8 +254,6 @@ function snips() {
   }
 
   //Add a line at bottom of list
-  // let lastSnip = document.querySelectorAll(".snippet-container");
-  // lastSnip[lastSnip.length - 1].style = "border-bottom: 3px solid #f44336;";
-
-
+  let lastSnip = document.querySelectorAll(".snippet-container");
+  lastSnip[lastSnip.length - 1].style = "border-bottom: 3px solid #f44336;";
 } //create snippet list end
