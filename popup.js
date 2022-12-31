@@ -55,7 +55,6 @@ async function getStorage() {
   await chrome.storage.sync.get("contentData").then((result) => {
     if (result.contentData != null) {
       data = result;
-      console.log("result", data);
     }
   });
 
@@ -79,11 +78,7 @@ saveBtn.addEventListener("click", async () => {
       textOnly = textBox.value.replace(/^<.*>/ig, "").replace('\n', "")//gets all the text
 
       //replace heading/color name with custom heading
-      console.log('getHeading', getHeading)
-
-
       snippetArray.unshift({text: textOnly, title: getHeading});
-      console.log('snippetArray', snippetArray)
       await chrome.storage.sync.set({ snippet: snippetArray });
       //localStorage.setItem("testSnip", JSON.stringify(textBox.value));
      
@@ -95,7 +90,6 @@ saveBtn.addEventListener("click", async () => {
     //localStorage.setItem("testSnip", JSON.stringify(textBox.value));
     textBox.value = "";
   }
-  console.log(snippetArray);
   //Store any text that was'nt saved of when popup lost focus
   localStorage.setItem("snipInput", JSON.stringify(textBox.value));
   snips();
@@ -107,8 +101,6 @@ function snips() {
   list.innerHTML = "";
   let updatedText = "";
   let prevVal = [];
-
-  console.log('snippetArray', snippetArray)
 
   snippetArray.forEach((item, i)=>{//!========Start the LOOP
   
@@ -163,7 +155,6 @@ function snips() {
    
         //newSnip = splitSnip.join().replace(",", "\n");
         item.text = updatedText
-        console.log('item.text', item.text)
 
         // UPDATE LOCAL STORAGE
         await chrome.storage.sync.set({ snippet: snippetArray });
@@ -196,7 +187,6 @@ function snips() {
       setTimeout(() => {
         getStorage();
       }, 500);
-      //console.log(snippetArray);
     });
     snipCon.appendChild(del);
 
@@ -227,7 +217,6 @@ function snips() {
     
 
       //"COGRAMMER ONLY" URL. Filter out student and topic name.================
-      console.log("data", data);
       if (data != null) {
         //extract name only
         trimmed1 = data.contentData.names[0].replace("Student: ", "").trim();
@@ -280,24 +269,18 @@ function snips() {
     up.alt = "up";
     up.title = "Move up";
     up.addEventListener("click", async () => {
-
-      console.log(snippetArray);
       //get selected snip index
       //let fromIndex = snippetArray.indexOf(snippetArray[i]); //index number
 
       //extract the selected snip
       let extracted = snippetArray.splice(i, 1, item[i]);
-
-      console.log('extracted', extracted[0])
-
-
       //prevent reaching into index -1
       //When snip is at indx 0, it can be moved up anymore
       //if (!fromIndex - 1 == -1) {
         //replace selected index item with the previous index item,
         //making both the same
         snippetArray.splice(i, 1, snippetArray[i - 1]);
-        //console.log(snippetArray[fromIndex - 1]);
+
         //when selecting an item, target the previous ones index,
         //and replace it with extracted snip
         snippetArray.splice(i - 1, 1, extracted[0]);
