@@ -36,6 +36,29 @@
   background-color: #e1f5fe;
 }
 
+/* width */
+#snips-textarea::-webkit-scrollbar {
+  width: 5px;
+}
+
+
+/* Track */
+#snips-textarea::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px #585858;
+  border-radius: 15px;
+}
+ 
+/* Handle */
+#snips-textarea::-webkit-scrollbar-thumb {
+  background: lightskyblue; 
+  border-radius: 15px;
+}
+
+/* Handle on hover */
+#snips-textarea::-webkit-scrollbar-thumb:hover {
+  background: rgb(62, 177, 248); 
+}
+
 .snips-container {
   display: flex;
   flex-direction: column;
@@ -57,8 +80,55 @@
 }
 
 .my-snippet {
-  width: 95%;
-  margin-left: 5px;
+  width: 90%;
+  margin-left: 10px;
+  white-space: pre-line;
+  background-color: #2a282b;
+  color: antiquewhite;
+  font-family: inherit;
+  font-size: inherit;
+  border-radius: 5px;
+  border: 0px;
+  transition: 1s linear;
+  overflow: hidden;
+}
+
+.my-snippet:focus-visible {
+  outline-color: coral;
+    outline-style: dashed;
+}
+
+.my-snippet-overflow {
+  overflow: auto !important;
+}
+/* width */
+.my-snippet::-webkit-scrollbar {
+  width: 5px;
+}
+.snippet-container:hover .my-snippet {
+  background-color: #3a3a3aeb;
+  transition: .3s ease-in;
+}
+.my-snippet:hover {
+  background-color: #3a3a3aeb;
+  transition: .3s ease-in;
+}
+
+/* Track */
+.my-snippet::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px #585858;
+  border-radius: 15px;
+}
+ 
+/* Handle */
+.my-snippet::-webkit-scrollbar-thumb {
+  background: lightskyblue; 
+  border-radius: 15px;
+}
+
+/* Handle on hover */
+.my-snippet::-webkit-scrollbar-thumb:hover {
+  background: rgb(62, 177, 248); 
 }
 
 .snippet-container img {
@@ -92,6 +162,12 @@
   padding: 3px;
 }
 
+.wordCountEl {
+  position: absolute;
+    right: 0;
+    bottom: 0;
+}
+
 
 .snips-paragraph-container {
   width: 90%;
@@ -100,6 +176,7 @@
   flex-wrap: wrap;
   justify-content: flex-start;
   align-items: flex-start;
+  position: relative;
 }
 
 .fade-snip-btn {

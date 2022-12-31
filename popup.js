@@ -6,21 +6,34 @@ let trimmed2 = "";
 let nameOnly = "";
 let trimmedT1 = "";
 let count = 0;
-
+let wordCount = 0
+//chrome.storage.sync.clear()
 //Save the input values to storage
 let textBox = document.querySelector("#snips-textarea");
+let snipContainer = document.querySelector('.snips-paragraph-container')
+let wordCountEl = document.createElement("span")
+wordCountEl.className = 'wordCountEl'
+textBox.maxLength = 600
 textBox.addEventListener("input", () => {
   //After loosing focus the input text will still persist
   localStorage.setItem("snipInput", JSON.stringify(textBox.value));
+
+  //count each word entered
+    let w = textBox.value.split(" ").length
+    wordCountEl.textContent =   `${w} word${w < 2? "":"s"} `
+  
+  snipContainer.appendChild(wordCountEl)
 });
 
 //insert CSS heading elements into textarea
 let insertHeading = document.querySelector(".add-heading");
 insertHeading.addEventListener("click", () => {
-  textBox.value = "<b style='color:hotpink'>Heading</b><br>";
+  textBox.value = "<HeaderName,color>\n";
+  //.replace(/[.*]/, '')
+  
 });
 
-//het the html elements
+//Get the html elements
 let list = document.querySelector(".snips-inner");
 let mainSnip = document.querySelector(".snips-main");
 
@@ -32,16 +45,13 @@ async function getStorage() {
     if (result.snippet != undefined) {
       snippetArray = result.snippet;
     }
+    snips();
   });
 
-  if (snippetArray != undefined) {
+  //load in previous text if it was not saved or popup lost focus
     if (localStorage.getItem("snipInput") != "") {
       textBox.value = JSON.parse(localStorage.getItem("snipInput"));
     }
-
-    snips();
-  }
-
   await chrome.storage.sync.get("contentData").then((result) => {
     if (result.contentData != null) {
       data = result;
@@ -49,22 +59,46 @@ async function getStorage() {
     }
   });
 
-  console.log(data);
+
 }
 getStorage();
 //===================================SAVE============================================
 //SAVE custom snippet to local storage
+let getHeading = "";
+let textOnly;
+let snipHeading = ""
+let color = ""
 let saveBtn = document.querySelector("#snips-save-btn");
 saveBtn.className = "btn-grad";
 saveBtn.addEventListener("click", async () => {
-  if (textBox.value != " ") {
-    snippetArray.unshift(textBox.value);
+
+  //Check if heading was added
+  //remove heading and first line break if added
+  if (textBox.value.match(/^<.*>/ig)) {
+      getHeading = textBox.value.match(/^<.*>/ig).toString().replace(/<|>/g,'', "").split(",")//get heading & color as array
+      textOnly = textBox.value.replace(/^<.*>/ig, "").replace('\n', "")//gets all the text
+
+      //replace heading/color name with custom heading
+      console.log('getHeading', getHeading)
+
+
+      snippetArray.unshift({text: textOnly, title: getHeading});
+      console.log('snippetArray', snippetArray)
+      await chrome.storage.sync.set({ snippet: snippetArray });
+      //localStorage.setItem("testSnip", JSON.stringify(textBox.value));
+     
+      textBox.value = "";
+      //Just for plain text
+  } else if (textBox.value != " " ) {
+    snippetArray.unshift({text: textBox.value, title: []});
     await chrome.storage.sync.set({ snippet: snippetArray });
-    snips();
+    //localStorage.setItem("testSnip", JSON.stringify(textBox.value));
     textBox.value = "";
   }
-  textBox.value = "";
+  console.log(snippetArray);
+  //Store any text that was'nt saved of when popup lost focus
   localStorage.setItem("snipInput", JSON.stringify(textBox.value));
+  snips();
 });
 //===============================================================================
 
@@ -72,41 +106,64 @@ saveBtn.addEventListener("click", async () => {
 function snips() {
   list.innerHTML = "";
   let updatedText = "";
-  let splitSnip = [];
-  let newSnip = "";
   let prevVal = [];
-  for (let i = 0; i < snippetArray.length; i++) {
+
+  console.log('snippetArray', snippetArray)
+
+  snippetArray.forEach((item, i)=>{//!========Start the LOOP
+  
     //snippet
     let snipCon = document.createElement("div");
     snipCon.className = "snippet-container";
 
-    let snip = document.createElement("p");
+    let head = document.createElement("span")
+    head.style.marginLeft = "10px"
+    //Only add the heading if it exists
+
+    if (item.title.length > 0) {
+      head.innerHTML = `<b style='color:${item.title[1]}'>${item.title[0]}</b>`// add heading about snip
+      snipCon.prepend(head)
+    } else {
+      head.innerHTML = ``
+      snipCon.prepend(head)
+    }
+
+  
+    
+
+    let snip = document.createElement("textarea");
     snip.className = "my-snippet";
+    snip.cols = "50";
+    snip.rows = "5"
     snip.setAttribute("contenteditable", "true");
-    snip.innerHTML = snippetArray[i];
-    prevVal[i] = snip.textContent; //store current text in array
+    snip.value = item.text;
+    prevVal[i] = snip.value; //store current text in array
 
     //fade out the buttons when editing snip
     snip.addEventListener("click", () => {
       fader("fade-snip-btn");
+      //add scrollbar inside textarea
+      snip.classList.add("my-snippet-overflow")
+      
     });
     snip.addEventListener("blur", async () => {
       //remove opacity from btns
       del.classList.remove("fade-snip-btn");
       copy.classList.remove("fade-snip-btn");
       up.classList.remove("fade-snip-btn");
+      snip.classList.remove("my-snippet-overflow")
       //ONLY UPDATE LIST IF CHANGES WERE MADE
-      if (prevVal[i] != snip.textContent) {
+      if (prevVal[i] != snip.value) {
         //EXTRACT UPDATED TEXT FROM SNIP ELEMENT
-        updatedText = snip.textContent.split("\n")[1];
-
+        updatedText = snip.value
         //SPLIT SNIPPET CONTENT
-        splitSnip = snip.innerHTML.split("\n");
+        //splitSnip = snip.innerHTML.split("\n");
 
         //UPDATE SNIP WITH NEW TEXT
-        splitSnip[1] = updatedText;
-        newSnip = splitSnip.join().replace(",", "\n");
-        snippetArray[i] = newSnip;
+   
+        //newSnip = splitSnip.join().replace(",", "\n");
+        item.text = updatedText
+        console.log('item.text', item.text)
 
         // UPDATE LOCAL STORAGE
         await chrome.storage.sync.set({ snippet: snippetArray });
@@ -117,6 +174,7 @@ function snips() {
         }, 500);
       }
     });
+   
     snipCon.appendChild(snip);
 
     //DELETE snippet btn
@@ -125,13 +183,14 @@ function snips() {
     del.alt = "delete";
     del.title = "Delete";
     del.className = "delete-snip snip-btn";
+    //increase the opacity on hover of buttons while faded
     function fader(className) {
       del.classList.add(className);
     }
     title = "double click to delete";
     del.addEventListener("dblclick", async () => {
       snipCon.className += " slide-out-left";
-      snippetArray.splice(snippetArray.indexOf(snippetArray[i]), 1);
+      snippetArray.splice(snippetArray.indexOf(item), 1);
       await chrome.storage.sync.set({ snippet: snippetArray });
 
       setTimeout(() => {
@@ -157,19 +216,20 @@ function snips() {
       //use regEx to remove the first line break from string(.replace(/\r?\n|\r/, ''))
 
       //If snip has no heading, don't remove line break
-      if (snippetArray[i].toString().includes("<br>")) {
-        copyThis = snippetArray[i]
-          .toString()
-          .replace(/<.*>/, "")
-          .replace(/\r?\n|\r/, "");
-      } else {
-        copyThis = snippetArray[i].toString();
-      }
+      // if (item.heading.toString().includes("<br>")) {
+ 
+      //     .toString()
+      //     .replace(/<.*>/, "")
+      //     .replace(/\r?\n|\r/, "");
+      // } else {
+      //   copyThis = item.text.toString();
+      // }
+    
+
+      //"COGRAMMER ONLY" URL. Filter out student and topic name.================
       console.log("data", data);
-      //Only works on the cogrammer URL. Filter out student and topic name
       if (data != null) {
         //extract name only
-        console.log(data.contentData.names[0]);
         trimmed1 = data.contentData.names[0].replace("Student: ", "").trim();
         trimmed2 = trimmed1.split(" ");
         nameOnly = trimmed2[0];
@@ -199,7 +259,7 @@ function snips() {
         let topic = trimmedT1.slice(getPosition(trimmedT1, "-", count) + 1);
 
         //add student name and/or topic name to snippet text
-        let filteredName = copyThis.replace("{name}", nameOnly.trim());
+        let filteredName = item.text.replace("{name}", nameOnly.trim());
 
         let filterComplete = filteredName.replace(
           "{topic}",
@@ -207,7 +267,8 @@ function snips() {
         );
         navigator.clipboard.writeText(filterComplete);
       } else {
-        navigator.clipboard.writeText(copyThis);
+      //==========================================================
+        navigator.clipboard.writeText(item.text);
       }
     });
     snipCon.appendChild(copy);
@@ -219,26 +280,33 @@ function snips() {
     up.alt = "up";
     up.title = "Move up";
     up.addEventListener("click", async () => {
+
+      console.log(snippetArray);
       //get selected snip index
-      let fromIndex = snippetArray.indexOf(snippetArray[i]); //index number
+      //let fromIndex = snippetArray.indexOf(snippetArray[i]); //index number
 
       //extract the selected snip
-      let extracted = snippetArray.splice(fromIndex, 1, snippetArray[i]);
+      let extracted = snippetArray.splice(i, 1, item[i]);
+
+      console.log('extracted', extracted[0])
+
 
       //prevent reaching into index -1
-      if (!fromIndex - 1 == -1) {
+      //When snip is at indx 0, it can be moved up anymore
+      //if (!fromIndex - 1 == -1) {
         //replace selected index item with the previous index item,
         //making both the same
-        snippetArray.splice(fromIndex, 1, snippetArray[fromIndex - 1]);
-
+        snippetArray.splice(i, 1, snippetArray[i - 1]);
+        //console.log(snippetArray[fromIndex - 1]);
         //when selecting an item, target the previous ones index,
         //and replace it with extracted snip
-        snippetArray.splice(fromIndex - 1, 1, extracted);
-      }
+        snippetArray.splice(i - 1, 1, extracted[0]);
+      //}
 
       //Call updated list
       await chrome.storage.sync.set({ snippet: snippetArray });
       await getStorage();
+    
     });
 
     //fadeout the buttons when editing snip
@@ -251,7 +319,7 @@ function snips() {
     snipCon.appendChild(up);
 
     list.appendChild(snipCon);
-  }
+  })
 
   //Add a line at bottom of list
   let lastSnip = document.querySelectorAll(".snippet-container");
