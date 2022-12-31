@@ -6,7 +6,7 @@ let trimmed2 = "";
 let nameOnly = "";
 let trimmedT1 = "";
 let count = 0;
-let wordCount = 0;
+//let wordCount = 0;
 //chrome.storage.sync.clear()
 //Save the input values to storage
 let textBox = document.querySelector("#snips-textarea");
@@ -18,11 +18,11 @@ textBox.addEventListener("input", () => {
   //After loosing focus the input text will still persist
   localStorage.setItem("snipInput", JSON.stringify(textBox.value));
 
-  //count each word entered
-  let w = textBox.value.split(" ").length;
-  wordCountEl.textContent = `${w} word${w < 2 ? "" : "s"} `;
+     //count each word entered
+//   let w = textBox.value.split(" ").length;
+//   wordCountEl.textContent = `${w} word${w < 2 ? "" : "s"} `;
 
-  snipContainer.appendChild(wordCountEl);
+//   snipContainer.appendChild(wordCountEl);
 });
 
 //insert CSS heading elements into textarea
@@ -123,7 +123,7 @@ function snips() {
     let snip = document.createElement("textarea");
     snip.className = "my-snippet";
     snip.cols = "50";
-    snip.rows = "5";
+    snip.rows = "4";
     snip.setAttribute("contenteditable", "true");
     snip.value = item.text;
     prevVal[i] = snip.value; //store current text in array
