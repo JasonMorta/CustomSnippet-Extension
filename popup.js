@@ -55,6 +55,8 @@ async function getStorage() {
       data = result;
     }
   });
+
+  console.log(snippetArray);
 }
 getStorage();
 //===================================SAVE============================================
@@ -77,20 +79,21 @@ saveBtn.addEventListener("click", async () => {
     textOnly = textBox.value.replace(/^<.*>/gi, "").replace("\n", ""); //gets all the text
 
     //replace heading/color name with custom heading
-    snippetArray.unshift({ text: textOnly, title: getHeading });
+    snippetArray.unshift({ text: textOnly, title: getHeading, hide: false });//!Create snip array object
     await chrome.storage.sync.set({ snippet: snippetArray });
     //localStorage.setItem("testSnip", JSON.stringify(textBox.value));
 
     textBox.value = "";
     //Just for plain text
   } else if (textBox.value != " ") {
-    snippetArray.unshift({ text: textBox.value, title: [] });
+    snippetArray.unshift({ text: textBox.value, title: [], hide: false });//!Create snip array object
     await chrome.storage.sync.set({ snippet: snippetArray });
     //localStorage.setItem("testSnip", JSON.stringify(textBox.value));
     textBox.value = "";
   }
   //Store any text that was'nt saved of when popup lost focus
   localStorage.setItem("snipInput", JSON.stringify(textBox.value));
+  console.log(snippetArray);
   snips();
 });
 //===============================================================================
@@ -126,6 +129,7 @@ function snips() {
     snip.rows = "4";
     snip.setAttribute("contenteditable", "true");
     snip.value = item.text;
+    snip.style.fontFamily = `${item.hide?"barcode": "FiraCode"}`
     prevVal[i] = snip.value; //store current text in array
 
     //fade out the buttons when editing snip
@@ -286,15 +290,42 @@ function snips() {
       await getStorage();
     });
 
+    //Hide text
+
+    let hide = document.createElement('img')
+    hide.src = `./static/images/${item.hide ? "eye": "invisible"}.png`
+    hide.className = "hide-snip snip-btn";
+    hide.alt = "hide & show text";
+    hide.title = item.hide ? "Show" : "Hide";
+    hide.addEventListener("click", async () => {
+      
+      if (item.hide == true) {
+        item.hide = false
+        hide.src = "./static/images/invisible.png";
+       
+      } else {
+        item.hide = true
+        hide.src = "./static/images/eye.png";
+      }
+
+      console.log(item.hide);
+      //Call updated list
+      await chrome.storage.sync.set({ snippet: snippetArray });
+      await getStorage();
+   
+
+    })
+
     //fadeout the buttons when editing snip
     function fader(className) {
       up.classList.add(className);
       copy.classList.add(className);
       del.classList.add(className);
+      hide.classList.add(className);
     }
 
     snipCon.appendChild(up);
-
+    snipCon.appendChild(hide);
     list.appendChild(snipCon);
   });
 
@@ -302,3 +333,5 @@ function snips() {
   let lastSnip = document.querySelectorAll(".snippet-container");
   lastSnip[lastSnip.length - 1].style = "border-bottom: 3px solid #f44336;";
 } //create snippet list end
+
+

@@ -19,6 +19,7 @@ async function changeHeading() {
     }
   
     //Store all captured data in object
+    //!Cogrammer student name
     const data = {
       names: allNames,
       url: path
