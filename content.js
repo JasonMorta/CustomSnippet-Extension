@@ -29,7 +29,7 @@ async function changeHeading() {
     await chrome.storage.sync.set({ contentData: data });
   } else {
     console.log("No student block found🚫");
-    await chrome.storage.sync.set({ contentData: null });
+    //await chrome.storage.sync.set({ contentData: null });
   }
 
 }
