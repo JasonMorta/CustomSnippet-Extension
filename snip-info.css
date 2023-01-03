@@ -1,0 +1,28 @@
+.snip-info {
+  font-size: 12px;
+  display: none;
+}
+
+.snip-info p{ 
+
+}
+
+.snip-infoBloock  {
+
+}
+
+.snip-allUsers {
+
+}
+
+.snip-review {
+
+}
+
+.snip-info-btnO {
+  position: absolute;
+    right: 0;
+    top: 0;
+    cursor: pointer;
+    margin: 2px;
+}
