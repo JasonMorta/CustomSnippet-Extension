@@ -9,7 +9,7 @@ async function changeHeading() {
   //let studentBlock = document.querySelector(".student-block")
   console.log('path.includes("hyperiondev.cogrammar.com")', path.includes("hyperiondev.cogrammar.com"))
   //FInd the student block, then send the data
-  if (path.includes("hyperiondev.cogrammar.com")) {
+  if (path.includes("generate_review")) {
 
     console.log("Found student block");
     let names = document.querySelectorAll("h6");
