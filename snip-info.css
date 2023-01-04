@@ -7,7 +7,7 @@
   backdrop-filter: blur(15.6px);
   -webkit-backdrop-filter: blur(15.6px);
   border: 1px solid rgba(255, 255, 255, 0.3);
-  position: absolute;
+  position: fixed;
   z-index: 2;
   color: white;
   padding: 10px;
