@@ -1,10 +1,28 @@
 .snip-info {
   font-size: 12px;
   display: none;
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgb(0 0 0 / 10%);
+  backdrop-filter: blur(15.6px);
+  -webkit-backdrop-filter: blur(15.6px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  position: absolute;
+  z-index: 2;
+  color: white;
+  padding: 10px;
+  width: 90%;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, 10px);
 }
 
 .snip-info p{ 
+margin-top: 0;
+}
 
+.snip-info-header {
+  margin: 0;
 }
 
 .snip-infoBloock  {
@@ -25,4 +43,11 @@
     top: 0;
     cursor: pointer;
     margin: 2px;
+}
+
+.snip-info-btnC {
+  position: absolute;
+    right: 5px;
+    top: 5px;
+    cursor: pointer;
 }

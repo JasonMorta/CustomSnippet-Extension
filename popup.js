@@ -111,7 +111,8 @@ function snips() {
     let snipCon = document.createElement("div");
     snipCon.className = "snippet-container";
 
-    let head = document.createElement("span");
+    let head = document.createElement("p");
+    head.style.textAlign = "left";
     head.style.marginLeft = "10px";
     //Only add the heading if it exists
 
