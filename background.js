@@ -5,4 +5,4 @@ console.log("background script")
 
 //swictches teh html page
 
-console.log(chrome.action.setPopup(object));
+//console.log(chrome.action.setPopup(object));

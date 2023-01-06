@@ -56,7 +56,7 @@ async function getStorage() {
     }
   });
 
-  console.log(snippetArray);
+  //console.log(snippetArray);
 }
 getStorage();
 //===================================SAVE============================================
@@ -93,7 +93,7 @@ saveBtn.addEventListener("click", async () => {
   }
   //Store any text that was'nt saved of when popup lost focus
   localStorage.setItem("snipInput", JSON.stringify(textBox.value));
-  console.log(snippetArray);
+  //console.log(snippetArray);
   snips();
 });
 //===============================================================================
@@ -309,7 +309,7 @@ function snips() {
         hide.src = "./static/images/eye.png";
       }
 
-      console.log(item.hide);
+      //console.log(item.hide);
       //Call updated list
       await chrome.storage.sync.set({ snippet: snippetArray });
       await getStorage();
