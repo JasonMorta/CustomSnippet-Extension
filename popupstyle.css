@@ -115,6 +115,7 @@
   font-size: initial;
   position: absolute;
   transition: .2s;
+  text-shadow: -1px -1px 1px black, -2px -2px 2px #ffffff9e;
 }
 
 .my-snippet {
@@ -267,15 +268,15 @@
 
 .btn-grad {
   background-image: linear-gradient(to right, #1e130c 0%, #9a8478 51%, #1e130c 100%);
-  margin: 2px 0px;
+  margin: 2px 2px 0px 2px;
   padding: 5px 10px;
   text-align: center;
   text-transform: uppercase;
   transition: 0.5s;
   background-size: 200% auto;
   color: white;
-  box-shadow: 0 0 17px -11px #eee;
-  border-radius: 20px;
+  box-shadow: -1px -1px 1px 0px #eee;
+  border-radius: 0px 20px;
   display: block;
   z-index: 1;
   border: 0px;
@@ -285,8 +286,10 @@
 
 .btn-grad:hover {
   background-position: center;
-  color: #000;
+  color: #fff;
+  text-shadow: -1px -1px 3px white, 1px 1px 3px white, 1px 1px 4px white;
   text-decoration: none;
+  box-shadow: 0px 0px 1px 1px white;
 }
 
 .add-heading {
