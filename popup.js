@@ -131,6 +131,7 @@ function snips() {
     snip.setAttribute("contenteditable", "true");
     snip.value = item.text;
     snip.style.fontFamily = `${item.hide?"barcode": "FiraCode"}`
+    snip.style.fontSize = `${item.hide?"initial": "inherit"}`
     prevVal[i] = snip.value; //store current text in array
 
     //fade out the buttons when editing snip

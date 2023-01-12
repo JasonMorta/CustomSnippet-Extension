@@ -5,7 +5,7 @@
 
 @font-face {
   font-family: barcode;
-  src: url(./font/Barcode.ttf);
+  src: url(./font/RedactedScript-Regular.ttf);
 }
 
 .snips-body {
@@ -15,6 +15,7 @@
   width: 400px;
   font-family: FiraCode, system-ui, sans-serif;
   font-size: smaller;
+ 
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
@@ -88,6 +89,7 @@
   position: relative;
   padding: 0.0625rem;
   width: 100%;
+  background-image: url("./static/images/bg.jpg");
 }
 
 .snippet-container {
@@ -97,21 +99,35 @@
   transition: 1s linear;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
+  transition: .2s;
 
+}
+
+.snippet-container p {
+  position: relative;
+  height: 10px;
+  width: 100%;
+  transition: .2s;
+}
+
+.snippet-container:hover b {
+  font-size: initial;
+  position: absolute;
+  transition: .2s;
 }
 
 .my-snippet {
   width: 90%;
   margin-left: 10px;
   white-space: pre-line;
-  background-color: #2a282b;
+  background-color: #2a282b40;
   color: antiquewhite;
   font-family: inherit;
   font-size: inherit;
   border-radius: 5px;
   border: 0px;
-  transition: 1s linear;
+  transition: .6s linear;
   overflow: hidden;
   min-height: 65px;
 }
@@ -131,13 +147,13 @@
 }
 
 .snippet-container:hover .my-snippet {
-  background-color: #3a3a3aeb;
-  transition: .3s ease-in;
+  /* background-color: #3a3a3aeb; */
+  transition: .2s ease-in;
 }
 
 .my-snippet:hover {
-  background-color: #3a3a3aeb;
-  transition: .3s ease-in;
+  /* background-color: #3a3a3aeb; */
+  transition: .2s ease-in;
 }
 
 /* Track */
@@ -183,7 +199,7 @@
 }
 
 .snippet-container:hover {
-  background-color: #3a3a3aeb;
+  background-color: #9797972b;
   transition: .3s ease-in;
   padding: 3px;
 }
@@ -215,6 +231,8 @@
   -webkit-user-select: none;
   user-select: none;
   transition: .1s linear;
+  background-color: #2a282b;
+  border-radius: 3px;
 }
 
 .snippet-container:hover .snip-btn {
