@@ -28,7 +28,7 @@ textBox.addEventListener("input", () => {
 //insert CSS heading elements into textarea
 let insertHeading = document.querySelector(".add-heading");
 insertHeading.addEventListener("click", () => {
-  textBox.value = "<HeaderName,color>\n";
+  textBox.value = "<HeaderName,colorCode>\n";
   //.replace(/[.*]/, '')
 });
 
@@ -39,11 +39,13 @@ let mainSnip = document.querySelector(".snips-main");
 //get snippets from localStorage
 
 async function getStorage() {
-  await chrome.storage.sync.get("snippet").then((result) => {
-    if (result.snippet != undefined) {
-      snippetArray = result.snippet;
+  console.log(`%c getting storage`, 'color: #2196f3')
+  retrieveData("snippet", (data) => {
+    if (data !== null) {
+      console.log(`Data retrieved successfully for prefix snips`, data);
+      console.log('snippetArray: ',snippetArray)
+      snips()
     }
-    snips();
   });
 
   //load in previous text if it was not saved or popup lost focus
@@ -80,14 +82,14 @@ saveBtn.addEventListener("click", async () => {
 
     //replace heading/color name with custom heading
     snippetArray.unshift({ text: textOnly, title: getHeading, hide: false });//!Create snip array object
-    await chrome.storage.sync.set({ snippet: snippetArray });
+    storeData("snippet", snippetArray) 
     //localStorage.setItem("testSnip", JSON.stringify(textBox.value));
 
     textBox.value = "";
     //Just for plain text
   } else if (textBox.value != " ") {
     snippetArray.unshift({ text: textBox.value, title: [], hide: false });//!Create snip array object
-    await chrome.storage.sync.set({ snippet: snippetArray });
+    storeData("snippet", snippetArray) 
     //localStorage.setItem("testSnip", JSON.stringify(textBox.value));
     textBox.value = "";
   }
@@ -98,8 +100,9 @@ saveBtn.addEventListener("click", async () => {
 });
 //===============================================================================
 
-//CREATE snippet list
+//CREATE snippet list elements
 function snips() {
+  console.log('snippetArray: ',snippetArray)
   list.innerHTML = "";
   let updatedText = "";
   let prevVal = [];
@@ -159,7 +162,7 @@ function snips() {
         item.text = updatedText;
 
         // UPDATE LOCAL STORAGE
-        await chrome.storage.sync.set({ snippet: snippetArray });
+        storeData("snippet", snippetArray) 
 
         //RERENDER LIST
         setTimeout(() => {
@@ -184,7 +187,7 @@ function snips() {
     del.addEventListener("dblclick", async () => {
       snipCon.className += " slide-out-left";
       snippetArray.splice(snippetArray.indexOf(item), 1);
-      await chrome.storage.sync.set({ snippet: snippetArray });
+      storeData("snippet", snippetArray) 
 
       setTimeout(() => {
         getStorage();
@@ -288,7 +291,7 @@ function snips() {
       //}
 
       //Call updated list
-      await chrome.storage.sync.set({ snippet: snippetArray });
+      storeData("snippet", snippetArray) 
       await getStorage();
     });
 
@@ -312,7 +315,7 @@ function snips() {
 
       //console.log(item.hide);
       //Call updated list
-      await chrome.storage.sync.set({ snippet: snippetArray });
+      storeData("snippet", snippetArray) 
       await getStorage();
    
 
@@ -333,7 +336,53 @@ function snips() {
 
   //Add a line at bottom of list
   let lastSnip = document.querySelectorAll(".snippet-container");
-  lastSnip[lastSnip.length - 1].style = "border-bottom: 3px solid #f44336;";
+  //lastSnip[lastSnip.length - 1].style = "border-bottom: 3px solid #f44336;";
 } //create snippet list end
 
+//Store all teh array objects as chunks to preserve space
+function storeData(keyPrefix, data) {
+  console.log(`%c storing storage`, 'color: #2196f3')
+  const CHUNK_SIZE = 4;//store each array as a new key value with 3 chunks of objects each
+    try {
+      const numChunks = Math.ceil(data.length / CHUNK_SIZE);
+      for (let i = 0; i < numChunks; i++) {
+        const chunkKey = `${keyPrefix}_${i}`;
+        const chunkStart = i * CHUNK_SIZE;
+        const chunkEnd = (i + 1) * CHUNK_SIZE;
+        const chunkData = JSON.stringify(data.slice(chunkStart, chunkEnd));
+        chrome.storage.sync.set({ [chunkKey]: chunkData }, () => {
+          console.log(`Chunk ${chunkKey} stored successfully`);
+        });
+      }
+      console.log(`Data stored successfully under prefix ${keyPrefix}`);
+    } catch (error) {
+      console.error("Error storing data", error);
+    }
+  }
 
+  //get all the chunks form storage sync and covert it into one object again
+   function retrieveData(keyPrefix, callback) {
+    console.log(`%c getting storage`, 'color: #2196f3')
+    snippetArray = [];
+    try {
+     
+      let i = 0;
+      const retrieveChunk =  (chunkKey) => {
+       chrome.storage.sync.get(chunkKey, (items) => {
+          const chunkData = items[chunkKey];
+          if (chunkData !== undefined) {
+            const chunk = JSON.parse(chunkData);
+            snippetArray.push(...chunk);
+            i++;
+            retrieveChunk(`${keyPrefix}_${i}`);
+          } else {
+            callback(snippetArray);
+          }
+        });
+      };
+      retrieveChunk(`${keyPrefix}_${i}`);
+    } catch (error) {
+      console.error("Error retrieving data", error);
+      callback(null);
+    }
+  }
