@@ -111,19 +111,27 @@
   transition: .2s;
 }
 
+.snippet-container b {
+  transition: .2s;
+
+}
+
 .snippet-container:hover b {
   font-size: initial;
   position: absolute;
   transition: .2s;
-  text-shadow: -1px -1px 1px black, -2px -2px 2px #ffffff9e;
+  color: #f5f5f5 !important;
+  text-shadow: 0px 0px 3px #f5f5f5, 0px 0px 2px #f5f5f5;
 }
+
+
 
 .my-snippet {
   width: 90%;
   margin-left: 10px;
   white-space: pre-line;
   background-color: #2a282b40;
-  color: antiquewhite;
+  color: #9e9e9e;
   font-family: inherit;
   font-size: inherit;
   border-radius: 5px;
