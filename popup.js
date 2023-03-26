@@ -186,7 +186,15 @@ function snips() {
     title = "double click to delete";
     del.addEventListener("dblclick", async () => {
       snipCon.className += " slide-out-left";
+      console.log('item', item)
+      console.log('snippetArray', snippetArray)
+      console.log('snippetArray.indexOf(item)', snippetArray.indexOf(item))
       snippetArray.splice(snippetArray.indexOf(item), 1);
+    
+     
+      console.log('snippetArray.splice(snippetArray.indexOf(item), 1);', snippetArray.splice(snippetArray.indexOf(item), 1))
+      
+      
       storeData("snippet", snippetArray) 
 
       setTimeout(() => {
@@ -336,11 +344,12 @@ function snips() {
 
   //Add a line at bottom of list
   let lastSnip = document.querySelectorAll(".snippet-container");
-  //lastSnip[lastSnip.length - 1].style = "border-bottom: 3px solid #f44336;";
+  lastSnip[lastSnip.length - 1].style = "border-bottom: 3px solid #f44336;";
 } //create snippet list end
 
 //Store all teh array objects as chunks to preserve space
 function storeData(keyPrefix, data) {
+  console.log('Stored', snippetArray)
   console.log(`%c storing storage`, 'color: #2196f3')
   const CHUNK_SIZE = 4;//store each array as a new key value with 3 chunks of objects each
     try {
@@ -385,4 +394,5 @@ function storeData(keyPrefix, data) {
       console.error("Error retrieving data", error);
       callback(null);
     }
+    console.log('Got data', snippetArray)
   }
