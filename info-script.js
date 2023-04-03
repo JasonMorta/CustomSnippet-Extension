@@ -25,15 +25,15 @@ infoClose.addEventListener("click", ()=>{
 })
 
   //CLOSE outer
-  mainSnip.addEventListener('click', ()=> {
+  // mainSnip.addEventListener('click', ()=> {
 
-    if (open == false) {
-      infoBlock.style.display = "none"
-      mainSnip.style.opacity = "initial"
-      // console.log('open', open)
-      // console.log("outer close");
-    }
-    open = false
-    // console.log("close outer");
-    // console.log('open', open)
-  })
+  //   if (open == false) {
+  //     infoBlock.style.display = "none"
+  //     mainSnip.style.opacity = "initial"
+  //     // console.log('open', open)
+  //     // console.log("outer close");
+  //   }
+  //   open = false
+  //   // console.log("close outer");
+  //   // console.log('open', open)
+  // })
