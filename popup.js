@@ -1,115 +1,42 @@
-let copyThis = "";
-let snippetArray = [];
-let data = null;
-let trimmed1 = "";
-let trimmed2 = "";
-let nameOnly = "";
-let trimmedT1 = "";
-let count = 0;
-//let wordCount = 0;
-//chrome.storage.sync.clear()
-//Save the input values to storage
-let textBox = document.querySelector("#snips-textarea");
-let snipContainer = document.querySelector(".snips-paragraph-container");
-let wordCountEl = document.createElement("span");
-wordCountEl.className = "wordCountEl";
-textBox.maxLength = 600;
-textBox.addEventListener("input", () => {
-  //After loosing focus the input text will still persist
-  localStorage.setItem("snipInput", JSON.stringify(textBox.value));
-
-     //count each word entered
-//   let w = textBox.value.split(" ").length;
-//   wordCountEl.textContent = `${w} word${w < 2 ? "" : "s"} `;
-
-//   snipContainer.appendChild(wordCountEl);
-});
-
-//insert CSS heading elements into textarea
-let insertHeading = document.querySelector(".add-heading");
-insertHeading.addEventListener("click", () => {
-  textBox.value = "<HeaderName,colorCode>\n";
-  //.replace(/[.*]/, '')
-});
+let snippetObject = [
+  //   {
+  //     text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
+  //     title: "title 1",
+  //     hide: false,
+  //   },
+  //   {
+  //     text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
+  //     title: "title 2",
+  //     hide: false,
+  //   },
+  //   {
+  //     text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
+  //     title: "title 3",
+  //     hide: false,
+  //   },
+  //   {
+  //     text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
+  //     title: "title 4",
+  //     hide: false,
+  //   },
+];
 
 //Get the html elements
 let list = document.querySelector(".snips-inner");
 let mainSnip = document.querySelector(".snips-main");
+let data = null;
 
-//get snippets from localStorage
+//!Render list
+async function renderList(array) {
+  console.count("rendered");
+  console.log("renderList array", array);
 
-async function getStorage() {
-  console.log(`%c getting storage`, 'color: #2196f3')
-  retrieveData("snippet", (data) => {
-    if (data !== null) {
-      console.log(`Data retrieved successfully for prefix snips`, data);
-      console.log('snippetArray: ',snippetArray)
-      snips()
-    }
-  });
-
-  //load in previous text if it was not saved or popup lost focus
-  if (localStorage.getItem("snipInput") != "") {
-    textBox.value = JSON.parse(localStorage.getItem("snipInput"));
-  }
-  await chrome.storage.sync.get("contentData").then((result) => {
-    if (result.contentData != null) {
-      data = result;
-    }
-  });
-
-  //console.log(snippetArray);
-}
-getStorage();
-//===================================SAVE============================================
-//SAVE custom snippet to local storage
-let getHeading = "";
-let textOnly;
-let snipHeading = "";
-let color = "";
-let saveBtn = document.querySelector("#snips-save-btn");
-saveBtn.className = "btn-grad";
-saveBtn.addEventListener("click", async () => {
-  //Check if heading was added
-  //remove heading and first line break if added
-  if (textBox.value.match(/^<.*>/gi)) {
-    getHeading = textBox.value
-      .match(/^<.*>/gi)
-      .toString()
-      .replace(/<|>/g, "", "")
-      .split(","); //get heading & color as array
-    textOnly = textBox.value.replace(/^<.*>/gi, "").replace("\n", ""); //gets all the text
-
-    //replace heading/color name with custom heading
-    snippetArray.unshift({ text: textOnly, title: getHeading, hide: false });//!Create snip array object
-    storeData("snippet", snippetArray) 
-    //localStorage.setItem("testSnip", JSON.stringify(textBox.value));
-
-    textBox.value = "";
-    //Just for plain text
-  } else if (textBox.value != " ") {
-    snippetArray.unshift({ text: textBox.value, title: [], hide: false });//!Create snip array object
-    storeData("snippet", snippetArray) 
-    //localStorage.setItem("testSnip", JSON.stringify(textBox.value));
-    textBox.value = "";
-  }
-  //Store any text that was'nt saved of when popup lost focus
-  localStorage.setItem("snipInput", JSON.stringify(textBox.value));
-  //console.log(snippetArray);
-  snips();
-});
-//===============================================================================
-
-//CREATE snippet list elements
-function snips() {
-  console.log('snippetArray: ',snippetArray)
   list.innerHTML = "";
   let updatedText = "";
   let prevVal = [];
 
-  snippetArray.forEach((item, i) => {
-    //!========Start the LOOP
-
+  //! loop
+  await array.forEach((item, i) => {
     //snippet
     let snipCon = document.createElement("div");
     snipCon.className = "snippet-container";
@@ -133,10 +60,11 @@ function snips() {
     snip.rows = "4";
     snip.setAttribute("contenteditable", "true");
     snip.value = item.text;
-    snip.style.fontFamily = `${item.hide?"barcode": "FiraCode"}`
-    snip.style.fontSize = `${item.hide?"initial": "inherit"}`
+    snip.style.fontFamily = `${item.hide ? "barcode" : "FiraCode"}`;
+    snip.style.fontSize = `${item.hide ? "initial" : "inherit"}`;
     prevVal[i] = snip.value; //store current text in array
 
+    //! Update item
     //fade out the buttons when editing snip
     snip.addEventListener("click", () => {
       fader("fade-snip-btn");
@@ -149,31 +77,19 @@ function snips() {
       copy.classList.remove("fade-snip-btn");
       up.classList.remove("fade-snip-btn");
       snip.classList.remove("my-snippet-overflow");
+
       //ONLY UPDATE LIST IF CHANGES WERE MADE
       if (prevVal[i] != snip.value) {
         //EXTRACT UPDATED TEXT FROM SNIP ELEMENT
-        updatedText = snip.value;
-        //SPLIT SNIPPET CONTENT
-        //splitSnip = snip.innerHTML.split("\n");
-
-        //UPDATE SNIP WITH NEW TEXT
-
-        //newSnip = splitSnip.join().replace(",", "\n");
-        item.text = updatedText;
-
-        // UPDATE LOCAL STORAGE
-        storeData("snippet", snippetArray) 
-
-        //RERENDER LIST
-        setTimeout(() => {
-          getStorage();
-        }, 500);
+        item.text = snip.value;
+        //UPDATE list
+        storeArrayData(snippetObject);
       }
     });
 
     snipCon.appendChild(snip);
 
-    //DELETE snippet btn
+    //!  DELETE
     let del = document.createElement("img");
     del.src = "./del.png";
     del.alt = "delete";
@@ -186,24 +102,18 @@ function snips() {
     title = "double click to delete";
     del.addEventListener("dblclick", async () => {
       snipCon.className += " slide-out-left";
-      console.log('item', item)
-      console.log('snippetArray', snippetArray)
-      console.log('snippetArray.indexOf(item)', snippetArray.indexOf(item))
-      snippetArray.splice(snippetArray.indexOf(item), 1);
-    
-     
-      console.log('snippetArray.splice(snippetArray.indexOf(item), 1);', snippetArray.splice(snippetArray.indexOf(item), 1))
-      
-      
-      storeData("snippet", snippetArray) 
+
+      snippetObject.splice(snippetObject.indexOf(item), 1);
+      console.log("snippetObject.indexOf(item)", snippetObject.indexOf(item));
+      console.log("snippetObject", snippetObject);
 
       setTimeout(() => {
-        getStorage();
+        storeArrayData(snippetObject);
       }, 500);
     });
     snipCon.appendChild(del);
 
-    //COPY text to clipboard
+    //! COPY item
     let copy = document.createElement("img");
     copy.className = "copy-snip snip-btn";
     copy.src = "./copy.png";
@@ -213,22 +123,7 @@ function snips() {
       //Change image
       copy.src = "./copyFill.png";
 
-      // Copy the text inside the p tag
-      //The object needs to converted to  a string to use regEx
-      //Use regEx to remove all the HTML elements from the string(.replace(/<.*>/,''))
-      //use regEx to remove the first line break from string(.replace(/\r?\n|\r/, ''))
-
-      //If snip has no heading, don't remove line break
-      // if (item.heading.toString().includes("<br>")) {
-
-      //     .toString()
-      //     .replace(/<.*>/, "")
-      //     .replace(/\r?\n|\r/, "");
-      // } else {
-      //   copyThis = item.text.toString();
-      // }
-
-      //"COGRAMMER ONLY" URL. Filter out student and topic name.================
+      //"COGRAMMER ONLY" URL. Filter out student and topic name.
       if (data != null) {
         //extract name only
         trimmed1 = data.contentData.names[0].replace("Student: ", "").trim();
@@ -268,66 +163,55 @@ function snips() {
         );
         navigator.clipboard.writeText(filterComplete);
       } else {
-        //==========================================================
+        //Copy plain text
         navigator.clipboard.writeText(item.text);
       }
     });
     snipCon.appendChild(copy);
 
-    //MOVE snip up btn
+    //! Move up
     let up = document.createElement("img");
     up.src = "./up.png";
     up.className = "move-snip snip-btn";
     up.alt = "up";
     up.title = "Move up";
     up.addEventListener("click", async () => {
-      //get selected snip index
-      //let fromIndex = snippetArray.indexOf(snippetArray[i]); //index number
-
       //extract the selected snip
-      let extracted = snippetArray.splice(i, 1, item[i]);
+      let extracted = snippetObject.splice(i, 1, item[i]);
       //prevent reaching into index -1
       //When snip is at indx 0, it can be moved up anymore
-      //if (!fromIndex - 1 == -1) {
+
       //replace selected index item with the previous index item,
       //making both the same
-      snippetArray.splice(i, 1, snippetArray[i - 1]);
+      snippetObject.splice(i, 1, snippetObject[i - 1]);
 
       //when selecting an item, target the previous ones index,
       //and replace it with extracted snip
-      snippetArray.splice(i - 1, 1, extracted[0]);
+      snippetObject.splice(i - 1, 1, extracted[0]);
       //}
 
       //Call updated list
-      storeData("snippet", snippetArray) 
-      await getStorage();
+      storeArrayData(snippetObject);
     });
 
-    //Hide text
-
-    let hide = document.createElement('img')
-    hide.src = `./static/images/${item.hide ? "eye": "invisible"}.png`
+    //! HIDE
+    let hide = document.createElement("img");
+    hide.src = `./static/images/${item.hide ? "eye" : "invisible"}.png`;
     hide.className = "hide-snip snip-btn";
     hide.alt = "hide & show text";
     hide.title = item.hide ? "Show" : "Hide";
     hide.addEventListener("click", async () => {
-      
       if (item.hide == true) {
-        item.hide = false
+        item.hide = false;
         hide.src = "./static/images/invisible.png";
-       
       } else {
-        item.hide = true
+        item.hide = true;
         hide.src = "./static/images/eye.png";
       }
 
-      //console.log(item.hide);
       //Call updated list
-      storeData("snippet", snippetArray) 
-      await getStorage();
-   
-
-    })
+      storeArrayData(snippetObject);
+    });
 
     //fadeout the buttons when editing snip
     function fader(className) {
@@ -340,59 +224,144 @@ function snips() {
     snipCon.appendChild(up);
     snipCon.appendChild(hide);
     list.appendChild(snipCon);
+  }); //For each end
+  bottomLine();
+} //end of renderList func
+
+//!  Store to chrome storage
+//only called when updating array
+function storeArrayData(array) {
+  //check if array is empty
+  if (snippetObject.length === 0) {
+    // If the array is empty, set it as the new array and return
+    snippetObject = array;
+    console.log("Array is empty, setting as new array", snippetObject);
+    const key = `myArrayChunk0`;
+    chrome.storage.sync.set({ [key]: array });
+    retrieveArrayData();
+    return;
+  }
+
+  // Break array into chunks to not reach storage quota limit.
+  const chunkSize = 1000;
+  // Calculate the number of chunks
+  const numChunks = Math.ceil(snippetObject.length / chunkSize);
+  // Store each chunk separately
+  for (let i = 0; i < numChunks; i++) {
+    const chunkStart = i * chunkSize;
+    const chunkEnd = (i + 1) * chunkSize;
+    const chunk = array.slice(chunkStart, chunkEnd);
+    const key = `myArrayChunk${i}`;
+    chrome.storage.sync.set({ [key]: chunk });
+  }
+
+  //after storing new data, get the array again
+  retrieveArrayData();
+}
+
+//! Get chrome data
+async function retrieveArrayData() {
+  await chrome.storage.sync.get(null, (data) => {
+    // Get all the stored chunks
+    const keys = Object.keys(data).filter((key) =>
+      key.startsWith("myArrayChunk")
+    );
+    if (keys.length > 0) {
+      // Combine the chunks into a single array
+      const storedArray = keys
+        .sort()
+        .map((key) => data[key])
+        .flat();
+      // Do something with the array...
+      snippetObject = storedArray;
+      console.log("retrieved from storage", snippetObject);
+      renderList(snippetObject);
+    } else {
+      // No array was found in chrome.storage.sync
+      console.log("snippetsObject not found");
+    }
+  });
+}
+
+//! SAVE new item
+function saveUserInput() {
+  let getHeading = "";
+  let textOnly;
+  let snipHeading = "";
+  let color = "";
+
+  //Save the input values to storage
+  let textBox = document.querySelector("#snips-textarea");
+  let snipContainer = document.querySelector(".snips-paragraph-container");
+  let wordCountEl = document.createElement("span");
+  wordCountEl.className = "wordCountEl";
+  textBox.addEventListener("input", () => {
+    //After loosing focus the input text will still persist
+    localStorage.setItem("snipInput", JSON.stringify(textBox.value));
   });
 
+  let saveBtn = document.querySelector("#snips-save-btn");
+  saveBtn.className = "btn-grad";
+  saveBtn.addEventListener("click", () => {
+    //Check if heading was added
+    //remove heading and first line break if added
+    if (textBox.value.match(/^<.*>/gi)) {
+      getHeading = textBox.value
+        .match(/^<.*>/gi)
+        .toString()
+        .replace(/<|>/g, "", "")
+        .split(","); //get heading & color as array
+      textOnly = textBox.value.replace(/^<.*>/gi, "").replace("\n", ""); //gets all the text
+
+      //replace heading/color name with custom heading
+      snippetObject.unshift({ text: textOnly, title: getHeading, hide: false }); //!Create snip array object
+      storeArrayData(snippetObject);
+      textBox.value = "";
+
+      //Just for plain text
+    } else if (textBox.value != " ") {
+      snippetObject.unshift({ text: textBox.value, title: [], hide: false }); //!Create snip array object
+      storeArrayData(snippetObject);
+      textBox.value = "";
+    }
+    //Store any text that was'nt saved of when popup lost focus
+    localStorage.setItem("snipInput", JSON.stringify(textBox.value));
+  });
+}
+
+//get snippets from localStorage
+async function getLastInput() {
+  let textBox = document.querySelector("#snips-textarea");
+  //load in previous text if it was not saved or popup lost focus
+  if (localStorage.getItem("snipInput") != "") {
+    textBox.value = JSON.parse(localStorage.getItem("snipInput"));
+  }
+  await chrome.storage.sync.get("contentData").then((result) => {
+    if (result.contentData != null) {
+      data = result;
+    }
+  });
+}
+
+//! CSS heading
+//insert CSS heading elements into textarea
+function addHeading() {
+  let textBox = document.querySelector("#snips-textarea");
+  let insertHeading = document.querySelector(".add-heading");
+  insertHeading.addEventListener("click", () => {
+    textBox.value = "<HeaderName,colorCode>\n";
+    //.replace(/[.*]/, '')
+  });
+}
+
+function bottomLine() {
   //Add a line at bottom of list
   let lastSnip = document.querySelectorAll(".snippet-container");
-  lastSnip[lastSnip.length - 1].style = "border-bottom: 3px solid #f44336;";
-} //create snippet list end
-
-//Store all teh array objects as chunks to preserve space
-function storeData(keyPrefix, data) {
-  console.log('Stored', snippetArray)
-  console.log(`%c storing storage`, 'color: #2196f3')
-  const CHUNK_SIZE = 4;//store each array as a new key value with 3 chunks of objects each
-    try {
-      const numChunks = Math.ceil(data.length / CHUNK_SIZE);
-      for (let i = 0; i < numChunks; i++) {
-        const chunkKey = `${keyPrefix}_${i}`;
-        const chunkStart = i * CHUNK_SIZE;
-        const chunkEnd = (i + 1) * CHUNK_SIZE;
-        const chunkData = JSON.stringify(data.slice(chunkStart, chunkEnd));
-        chrome.storage.sync.set({ [chunkKey]: chunkData }, () => {
-          console.log(`Chunk ${chunkKey} stored successfully`);
-        });
-      }
-      console.log(`Data stored successfully under prefix ${keyPrefix}`);
-    } catch (error) {
-      console.error("Error storing data", error);
-    }
+  if (lastSnip.length !== 0) {
+    lastSnip[lastSnip.length - 1].style = "border-bottom: 3px solid #f44336;";
   }
-
-  //get all the chunks form storage sync and covert it into one object again
-   function retrieveData(keyPrefix, callback) {
-    console.log(`%c getting storage`, 'color: #2196f3')
-    snippetArray = [];
-    try {
-     
-      let i = 0;
-      const retrieveChunk =  (chunkKey) => {
-       chrome.storage.sync.get(chunkKey, (items) => {
-          const chunkData = items[chunkKey];
-          if (chunkData !== undefined) {
-            const chunk = JSON.parse(chunkData);
-            snippetArray.push(...chunk);
-            i++;
-            retrieveChunk(`${keyPrefix}_${i}`);
-          } else {
-            callback(snippetArray);
-          }
-        });
-      };
-      retrieveChunk(`${keyPrefix}_${i}`);
-    } catch (error) {
-      console.error("Error retrieving data", error);
-      callback(null);
-    }
-    console.log('Got data', snippetArray)
-  }
+}
+addHeading();
+getLastInput();
+retrieveArrayData(); //get array
+saveUserInput();
