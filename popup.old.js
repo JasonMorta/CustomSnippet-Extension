@@ -17,43 +17,28 @@ textBox.addEventListener("input", () => {
   //After loosing focus the input text will still persist
   localStorage.setItem("snipInput", JSON.stringify(textBox.value));
 
-     //count each word entered
-//   let w = textBox.value.split(" ").length;
-//   wordCountEl.textContent = `${w} word${w < 2 ? "" : "s"} `;
+  //count each word entered
+  //   let w = textBox.value.split(" ").length;
+  //   wordCountEl.textContent = `${w} word${w < 2 ? "" : "s"} `;
 
-//   snipContainer.appendChild(wordCountEl);
+  //   snipContainer.appendChild(wordCountEl);
 });
-
 
 //insert CSS heading elements into textarea
-function addHeading() {  
-let insertHeading = document.querySelector(".add-heading");
-insertHeading.addEventListener("click", () => {
-  textBox.value = "<HeaderName,colorCode>\n";
-  //.replace(/[.*]/, '')
-});
+function addHeading() {
+  let insertHeading = document.querySelector(".add-heading");
+  insertHeading.addEventListener("click", () => {
+    textBox.value = "<HeaderName,colorCode>\n";
+    //.replace(/[.*]/, '')
+  });
 }
-
-
 
 //Get the html elements
 let list = document.querySelector(".snips-inner");
 let mainSnip = document.querySelector(".snips-main");
 
-
-
-
-
-
-
-
-
-
 //get snippets from localStorage
 async function getStorage() {
- 
-
-
   //load in previous text if it was not saved or popup lost focus
   if (localStorage.getItem("snipInput") != "") {
     textBox.value = JSON.parse(localStorage.getItem("snipInput"));
@@ -63,23 +48,8 @@ async function getStorage() {
       data = result;
     }
   });
-
-  
 }
 getStorage();
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //===================================SAVE============================================
 //SAVE custom snippet to local storage
@@ -101,15 +71,15 @@ saveBtn.addEventListener("click", async () => {
     textOnly = textBox.value.replace(/^<.*>/gi, "").replace("\n", ""); //gets all the text
 
     //replace heading/color name with custom heading
-    snippetArray.unshift({ text: textOnly, title: getHeading, hide: false });//!Create snip array object
-    storeData("snippet", snippetArray) 
+    snippetArray.unshift({ text: textOnly, title: getHeading, hide: false }); //!Create snip array object
+    storeData("snippet", snippetArray);
     //localStorage.setItem("testSnip", JSON.stringify(textBox.value));
 
     textBox.value = "";
     //Just for plain text
   } else if (textBox.value != " ") {
-    snippetArray.unshift({ text: textBox.value, title: [], hide: false });//!Create snip array object
-    storeData("snippet", snippetArray) 
+    snippetArray.unshift({ text: textBox.value, title: [], hide: false }); //!Create snip array object
+    storeData("snippet", snippetArray);
     //localStorage.setItem("testSnip", JSON.stringify(textBox.value));
     textBox.value = "";
   }
@@ -122,7 +92,7 @@ saveBtn.addEventListener("click", async () => {
 
 //CREATE snippet list elements
 function snips() {
-  console.log('snippetArray: ',snippetArray)
+  console.log("snippetArray: ", snippetArray);
   list.innerHTML = "";
   let updatedText = "";
   let prevVal = [];
@@ -153,8 +123,8 @@ function snips() {
     snip.rows = "4";
     snip.setAttribute("contenteditable", "true");
     snip.value = item.text;
-    snip.style.fontFamily = `${item.hide?"barcode": "FiraCode"}`
-    snip.style.fontSize = `${item.hide?"initial": "inherit"}`
+    snip.style.fontFamily = `${item.hide ? "barcode" : "FiraCode"}`;
+    snip.style.fontSize = `${item.hide ? "initial" : "inherit"}`;
     prevVal[i] = snip.value; //store current text in array
 
     //fade out the buttons when editing snip
@@ -182,7 +152,7 @@ function snips() {
         item.text = updatedText;
 
         // UPDATE LOCAL STORAGE
-        storeData("snippet", snippetArray) 
+        storeData("snippet", snippetArray);
 
         //RERENDER LIST
         setTimeout(() => {
@@ -210,12 +180,13 @@ function snips() {
       // console.log('snippetArray', snippetArray)
       // console.log('snippetArray.indexOf(item)', snippetArray.indexOf(item))
       snippetArray.splice(snippetArray.indexOf(item), 1);
-    
-     
-      console.log('snippetArray.splice(snippetArray.indexOf(item), 1);', snippetArray.splice(snippetArray.indexOf(item), 1))
-      
-      
-      storeData("snippet", snippetArray) 
+
+      console.log(
+        "snippetArray.splice(snippetArray.indexOf(item), 1);",
+        snippetArray.splice(snippetArray.indexOf(item), 1)
+      );
+
+      storeData("snippet", snippetArray);
 
       setTimeout(() => {
         getStorage();
@@ -319,35 +290,31 @@ function snips() {
       //}
 
       //Call updated list
-      storeData("snippet", snippetArray) 
+      storeData("snippet", snippetArray);
       await getStorage();
     });
 
     //Hide text
 
-    let hide = document.createElement('img')
-    hide.src = `./static/images/${item.hide ? "eye": "invisible"}.png`
+    let hide = document.createElement("img");
+    hide.src = `./static/images/${item.hide ? "eye" : "invisible"}.png`;
     hide.className = "hide-snip snip-btn";
     hide.alt = "hide & show text";
     hide.title = item.hide ? "Show" : "Hide";
     hide.addEventListener("click", async () => {
-      
       if (item.hide == true) {
-        item.hide = false
+        item.hide = false;
         hide.src = "./static/images/invisible.png";
-       
       } else {
-        item.hide = true
+        item.hide = true;
         hide.src = "./static/images/eye.png";
       }
 
       //console.log(item.hide);
       //Call updated list
-      storeData("snippet", snippetArray) 
+      storeData("snippet", snippetArray);
       await getStorage();
-   
-
-    })
+    });
 
     //fadeout the buttons when editing snip
     function fader(className) {
@@ -369,50 +336,49 @@ function snips() {
 
 //Store all teh array objects as chunks to preserve space
 function storeData(keyPrefix, data) {
-  console.log('Stored', snippetArray)
-  console.log(`%c storing storage`, 'color: #2196f3')
-  const CHUNK_SIZE = 4;//store each array as a new key value with 3 chunks of objects each
-    try {
-      const numChunks = Math.ceil(data.length / CHUNK_SIZE);
-      for (let i = 0; i < numChunks; i++) {
-        const chunkKey = `${keyPrefix}_${i}`;
-        const chunkStart = i * CHUNK_SIZE;
-        const chunkEnd = (i + 1) * CHUNK_SIZE;
-        const chunkData = JSON.stringify(data.slice(chunkStart, chunkEnd));
-        chrome.storage.sync.set({ [chunkKey]: chunkData }, () => {
-          console.log(`Chunk ${chunkKey} stored successfully`);
-        });
-      }
-      console.log(`Data stored successfully under prefix ${keyPrefix}`);
-    } catch (error) {
-      console.error("Error storing data", error);
+  console.log("Stored", snippetArray);
+  console.log(`%c storing storage`, "color: #2196f3");
+  const CHUNK_SIZE = 4; //store each array as a new key value with 3 chunks of objects each
+  try {
+    const numChunks = Math.ceil(data.length / CHUNK_SIZE);
+    for (let i = 0; i < numChunks; i++) {
+      const chunkKey = `${keyPrefix}_${i}`;
+      const chunkStart = i * CHUNK_SIZE;
+      const chunkEnd = (i + 1) * CHUNK_SIZE;
+      const chunkData = JSON.stringify(data.slice(chunkStart, chunkEnd));
+      chrome.storage.sync.set({ [chunkKey]: chunkData }, () => {
+        console.log(`Chunk ${chunkKey} stored successfully`);
+      });
     }
+    console.log(`Data stored successfully under prefix ${keyPrefix}`);
+  } catch (error) {
+    console.error("Error storing data", error);
   }
+}
 
-  //get all the chunks form storage sync and covert it into one object again
-   function retrieveData(keyPrefix, callback) {
-    console.log(`%c getting storage`, 'color: #2196f3')
-    snippetArray = [];
-    try {
-     
-      let i = 0;
-      const retrieveChunk =  (chunkKey) => {
-       chrome.storage.sync.get(chunkKey, (items) => {
-          const chunkData = items[chunkKey];
-          if (chunkData !== undefined) {
-            const chunk = JSON.parse(chunkData);
-            snippetArray.push(...chunk);
-            i++;
-            retrieveChunk(`${keyPrefix}_${i}`);
-          } else {
-            callback(snippetArray);
-          }
-        });
-      };
-      retrieveChunk(`${keyPrefix}_${i}`);
-    } catch (error) {
-      console.error("Error retrieving data", error);
-      callback(null);
-    }
-    console.log('Got data', snippetArray)
+//get all the chunks form storage sync and covert it into one object again
+function retrieveData(keyPrefix, callback) {
+  console.log(`%c getting storage`, "color: #2196f3");
+  snippetArray = [];
+  try {
+    let i = 0;
+    const retrieveChunk = (chunkKey) => {
+      chrome.storage.sync.get(chunkKey, (items) => {
+        const chunkData = items[chunkKey];
+        if (chunkData !== undefined) {
+          const chunk = JSON.parse(chunkData);
+          snippetArray.push(...chunk);
+          i++;
+          retrieveChunk(`${keyPrefix}_${i}`);
+        } else {
+          callback(snippetArray);
+        }
+      });
+    };
+    retrieveChunk(`${keyPrefix}_${i}`);
+  } catch (error) {
+    console.error("Error retrieving data", error);
+    callback(null);
   }
+  console.log("Got data", snippetArray);
+}
