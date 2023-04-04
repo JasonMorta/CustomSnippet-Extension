@@ -1,30 +1,16 @@
 let snippetObject = [
-  //   {
-  //     text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-  //     title: "title 1",
-  //     hide: false,
-  //   },
-  //   {
-  //     text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-  //     title: "title 2",
-  //     hide: false,
-  //   },
-  //   {
-  //     text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-  //     title: "title 3",
-  //     hide: false,
-  //   },
-  //   {
-  //     text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-  //     title: "title 4",
-  //     hide: false,
-  //   },
+
 ];
 
 //Get the html elements
 let list = document.querySelector(".snips-inner");
 let mainSnip = document.querySelector(".snips-main");
 let data = null;
+let trimmed1 = "";
+let trimmed2 = "";
+let nameOnly = "";
+let trimmedT1 = "";
+let count = 0;
 
 //!Render list
 async function renderList(array) {
