@@ -136,9 +136,9 @@
   border-radius: 5px;
   border: 0px;
   transition: .6s linear;
-  overflow: hidden;
-  min-height: 65px;
-}
+  /* overflow: hidden; */
+  /* min-height: 65px;*/
+} 
 
 .my-snippet:focus-visible {
   outline-color: coral;

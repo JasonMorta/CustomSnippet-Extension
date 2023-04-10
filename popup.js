@@ -43,12 +43,19 @@ async function renderList(array) {
     let snip = document.createElement("textarea");
     snip.className = "my-snippet";
     snip.cols = "50";
-    snip.rows = "4";
     snip.setAttribute("contenteditable", "true");
     snip.value = item.text;
     snip.style.fontFamily = `${item.hide ? "barcode" : "FiraCode"}`;
     snip.style.fontSize = `${item.hide ? "initial" : "inherit"}`;
     prevVal[i] = snip.value; //store current text in array
+
+    //Handle textarea auto sizing on load
+    const textLength = snip.value.length;
+    const colWidth = 38; // Adjust this value to your liking
+    const numCols = Math.ceil(textLength / colWidth);
+    snip.rows = numCols
+
+
 
     //! Update item
     //fade out the buttons when editing snip
@@ -73,6 +80,10 @@ async function renderList(array) {
       }
     });
 
+
+
+
+ 
     snipCon.appendChild(snip);
 
     //!  DELETE
@@ -281,9 +292,14 @@ function saveUserInput() {
   let snipContainer = document.querySelector(".snips-paragraph-container");
   let wordCountEl = document.createElement("span");
   wordCountEl.className = "wordCountEl";
+
   textBox.addEventListener("input", () => {
     //After loosing focus the input text will still persist
     localStorage.setItem("snipInput", JSON.stringify(textBox.value));
+
+    //handle auto sizing
+    textBox.style.height = "auto";
+    textBox.style.height = textBox.scrollHeight + "px";
   });
 
   let saveBtn = document.querySelector("#snips-save-btn");
