@@ -152,9 +152,9 @@ async function renderList(array) {
         let topic = trimmedT1.slice(getPosition(trimmedT1, "-", count) + 1);
 
         //add student name and/or topic name to snippet text
-        let filteredName = item.text.replace("{name}", nameOnly.trim());
+        let filteredName = item.text.replaceAll("{name}", nameOnly.trim());
 
-        let filterComplete = filteredName.replace(
+        let filterComplete = filteredName.replaceAll(
           "{topic}",
           topic.toLowerCase().trim()
         );
