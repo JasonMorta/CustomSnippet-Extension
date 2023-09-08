@@ -14,6 +14,7 @@ let count = 0;
 
 //!Render list
 async function renderList(array) {
+  console.log(`%c Build List`, 'color: teal')
 
   list.innerHTML = "";
   let updatedText = "";
@@ -223,52 +224,66 @@ async function renderList(array) {
 
 //!  Store to chrome storage
 //only called when updating array
-async function storeArrayData(array, title) {
+async function storeArrayData(snip, title) {
+
+  console.log(`%c Set Storage`, 'color: #2196f3')
   const now = new Date();
   let currentDate = date.format(now, 'YYYY/MM/DD HH:mm:ss')
   let storageLength = 0
   //check if array is empty
 
-    //chrome.storage.sync.set({ [key]: array });
+  //chrome.storage.sync.set({ [key]: array });
 
-    await chrome.storage.sync.get(null, function(items) { 
-      storageLength = Object.keys(items).length
-      });
-  
-    const noteContent = JSON.stringify(array)
-
-    //save not to local storage, including data
-    const uniqueKey = `${storageLength} ${title ?? " "}-${currentDate} mySnippet`;
+  // await chrome.storage.sync.get(null, function(items) { 
+  //   storageLength = .keys(items).length
+  //   console.log('storageLength', storageLength)Object
+  //   });
 
 
-    chrome.storage.sync.set({ uniqueKey: noteContent }).then(() => {
-      console.log("Value is set");
-    });
+  //const noteContent = JSON.stringify(array)
+  console.log('snip', snip)
+  //save not to local storage, including data
+  const uniqueKey = `${title[0] ?? ""} - ${currentDate}`;
+
+  //since storage wont contains any other keys, special keys are not required.(however, a key that uses the same name, will replace existing ones)
+
+  chrome.storage.sync.set({ [uniqueKey]: snip }).then(() => {
+    console.log("Snip saved");
+  });
 
 
 
 
   //after storing new data, get the array again
-  retrieveArrayData(uniqueKey);
+  renderList(snippetObject);
 }
 
 //! Get chrome data
 async function retrieveArrayData() {
-//chrome.storage.sync.clear()
+  console.log(`%c GET Storage`, 'color: #2196f3')
+  //chrome.storage.sync.clear()
 
-    //find all snippets by key name
-    chrome.storage.sync.get(null, function(items) {
-         console.log('Object.keys(items)', Object.keys(items))
-     for (let i = 0; i < Object.keys(items).length; i++) {
-   
-      console.log('items', items)
-       //push all snips into array
-       snippetObject.push(JSON.parse(items))
-     
-     }
-      
-    });
-    console.log('snippetObject', snippetObject)
+ 
+
+  //find all snippets by key name
+  chrome.storage.sync.get(null, function (snips) {
+    console.log('items', snips)// returns an object(s)
+ 
+    // loop though the storage object,, extract the value object, push it to array
+    for (const key in snips) {
+      if (snips.hasOwnProperty(key)) {
+        const value = snips[key];
+         snippetObject.unshift(value)
+      }
+    }
+
+  });
+
+  console.log('snippetObject')
+  console.log(snippetObject)
+    //render updated list
+    renderList(snippetObject);
+ 
 
   // await chrome.storage.sync.get(null, (data) => {
   //   // Get all the stored chunks
@@ -338,22 +353,26 @@ function saveUserInput() {
       }
 
       //! Check if item with same heading exists
-      if (checkExistence(getHeading)) return alert("Heading already exist")
+      //if (checkExistence(getHeading)) return alert("Heading already exist")
 
       //replace heading/color name with custom heading
       snippetObject.unshift(snip); //!Create snip array object
-      storeArrayData(snippetObject, snip.title[0]);
+      storeArrayData(snip, snip.title[0]);
       textBox.value = "";
 
       //Just for plain text
     } else if (textBox.value != " ") {
       snippetObject.unshift({ text: textBox.value, title: [], hide: false, date: currentDate, id: snippetObject.length }); //!Create snip array object
-      storeArrayData(snippetObject, " ");
+      storeArrayData(snip, " ");
       textBox.value = "";
     }
     //Store any text that was'nt saved of when popup lost focus
     localStorage.setItem("snipInput", JSON.stringify(textBox.value));
+    console.log('snippetObject')
     console.log(snippetObject)
+    
+    //render updated list
+    renderList(snippetObject);
   });
 }
 
