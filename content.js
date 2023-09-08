@@ -1,5 +1,5 @@
 let allNames = [];
-
+console.log("content.js loaded");
 async function changeHeading() {
   //get current url path
   let path = window.location.href;

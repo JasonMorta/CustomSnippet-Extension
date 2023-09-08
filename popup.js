@@ -14,8 +14,6 @@ let count = 0;
 
 //!Render list
 async function renderList(array) {
-  console.count("rendered");
-  console.log("renderList array", array);
 
   list.innerHTML = "";
   let updatedText = "";
@@ -83,7 +81,7 @@ async function renderList(array) {
 
 
 
- 
+
     snipCon.appendChild(snip);
 
     //!  DELETE
@@ -101,8 +99,6 @@ async function renderList(array) {
       snipCon.className += " slide-out-left";
 
       snippetObject.splice(snippetObject.indexOf(item), 1);
-      console.log("snippetObject.indexOf(item)", snippetObject.indexOf(item));
-      console.log("snippetObject", snippetObject);
 
       setTimeout(() => {
         storeArrayData(snippetObject);
@@ -227,69 +223,82 @@ async function renderList(array) {
 
 //!  Store to chrome storage
 //only called when updating array
-function storeArrayData(array) {
+async function storeArrayData(array, title) {
+  const now = new Date();
+  let currentDate = date.format(now, 'YYYY/MM/DD HH:mm:ss')
+  let storageLength = 0
   //check if array is empty
-  if (snippetObject.length === 0) {
-    // If the array is empty, set it as the new array and return
-    snippetObject = array;
-    console.log("Array is empty, setting as new array", snippetObject);
-    const key = `myArrayChunk0`;
-    chrome.storage.sync.set({ [key]: array });
-    retrieveArrayData();
-    return;
-  }
 
-  // Break array into chunks to not reach storage quota limit.
-  const chunkSize = 1000;
-  // Calculate the number of chunks
-  const numChunks = Math.ceil(snippetObject.length / chunkSize);
-  // Store each chunk separately
-  for (let i = 0; i < numChunks; i++) {
-    const chunkStart = i * chunkSize;
-    const chunkEnd = (i + 1) * chunkSize;
-    const chunk = array.slice(chunkStart, chunkEnd);
-    const key = `myArrayChunk${i}`;
-    chrome.storage.sync.set({ [key]: chunk });
-  }
+    //chrome.storage.sync.set({ [key]: array });
+
+    await chrome.storage.sync.get(null, function(items) { 
+      storageLength = Object.keys(items).length
+      });
+  
+    const noteContent = JSON.stringify(array)
+
+    //save not to local storage, including data
+    const uniqueKey = `${storageLength} ${title ?? " "}-${currentDate} mySnippet`;
+
+
+    chrome.storage.sync.set({ uniqueKey: noteContent }).then(() => {
+      console.log("Value is set");
+    });
+
+
+
 
   //after storing new data, get the array again
-  retrieveArrayData();
+  retrieveArrayData(uniqueKey);
 }
 
 //! Get chrome data
 async function retrieveArrayData() {
-  await chrome.storage.sync.get(null, (data) => {
-    // Get all the stored chunks
-    const keys = Object.keys(data).filter((key) =>
-      key.startsWith("myArrayChunk")
-    );
-    if (keys.length > 0) {
-      // Combine the chunks into a single array
-      const storedArray = keys
-        .sort()
-        .map((key) => data[key])
-        .flat();
-      // Do something with the array...
-      snippetObject = storedArray;
-      console.log("retrieved from storage", snippetObject);
-      renderList(snippetObject);
-    } else {
-      // No array was found in chrome.storage.sync
-      console.log("snippetsObject not found");
-    }
-  });
+//chrome.storage.sync.clear()
+
+    //find all snippets by key name
+    chrome.storage.sync.get(null, function(items) {
+         console.log('Object.keys(items)', Object.keys(items))
+     for (let i = 0; i < Object.keys(items).length; i++) {
+   
+      console.log('items', items)
+       //push all snips into array
+       snippetObject.push(JSON.parse(items))
+     
+     }
+      
+    });
+    console.log('snippetObject', snippetObject)
+
+  // await chrome.storage.sync.get(null, (data) => {
+  //   // Get all the stored chunks
+  //   const keys = Object.keys(data).filter((key) =>
+  //     key.startsWith("myArrayChunk")
+  //   );
+  //   if (keys.length > 0) {
+  //     // Combine the chunks into a single array
+  //     const storedArray = keys
+  //       .sort()
+  //       .map((key) => data[key])
+  //       .flat();
+  //     // Do something with the array...
+  //     snippetObject = storedArray;
+
+  //     renderList(snippetObject);
+  //   } else {
+  //     // No array was found in chrome.storage.sync
+  //     console.log("snippetsObject not found");
+  //   }
+  // });
 }
 
-//! SAVE new item
+//! SAVE new item element
 function saveUserInput() {
   let getHeading = "";
   let textOnly;
-  let snipHeading = "";
-  let color = "";
 
   //Save the input values to storage
   let textBox = document.querySelector("#snips-textarea");
-  let snipContainer = document.querySelector(".snips-paragraph-container");
   let wordCountEl = document.createElement("span");
   wordCountEl.className = "wordCountEl";
 
@@ -305,9 +314,12 @@ function saveUserInput() {
   let saveBtn = document.querySelector("#snips-save-btn");
   saveBtn.className = "btn-grad";
   saveBtn.addEventListener("click", () => {
+    const now = new Date();
+    let currentDate = date.format(now, 'YYYY/MM/DD HH:mm:ss')
     //Check if heading was added
     //remove heading and first line break if added
     if (textBox.value.match(/^<.*>/gi)) {
+      //place heading and color in array  ['HeaderName', 'color']
       getHeading = textBox.value
         .match(/^<.*>/gi)
         .toString()
@@ -315,23 +327,46 @@ function saveUserInput() {
         .split(","); //get heading & color as array
       textOnly = textBox.value.replace(/^<.*>/gi, "").replace("\n", ""); //gets all the text
 
+
+
+      let snip = {
+        text: textOnly,
+        title: [getHeading],
+        date: currentDate,
+        id: snippetObject.length,
+        hide: false
+      }
+
+      //! Check if item with same heading exists
+      if (checkExistence(getHeading)) return alert("Heading already exist")
+
       //replace heading/color name with custom heading
-      snippetObject.unshift({ text: textOnly, title: getHeading, hide: false }); //!Create snip array object
-      storeArrayData(snippetObject);
+      snippetObject.unshift(snip); //!Create snip array object
+      storeArrayData(snippetObject, snip.title[0]);
       textBox.value = "";
 
       //Just for plain text
     } else if (textBox.value != " ") {
-      snippetObject.unshift({ text: textBox.value, title: [], hide: false }); //!Create snip array object
-      storeArrayData(snippetObject);
+      snippetObject.unshift({ text: textBox.value, title: [], hide: false, date: currentDate, id: snippetObject.length }); //!Create snip array object
+      storeArrayData(snippetObject, " ");
       textBox.value = "";
     }
     //Store any text that was'nt saved of when popup lost focus
     localStorage.setItem("snipInput", JSON.stringify(textBox.value));
+    console.log(snippetObject)
   });
 }
 
-//get snippets from localStorage
+//! Check if the added item heading already exist
+function checkExistence(currentItem) {
+  let exists
+  for (let i = 0; i < snippetObject.length; i++) {
+    exists = snippetObject[i].title.includes(currentItem[0]);
+    return exists  //return exists // return a boolean
+  }
+}
+
+//! Get snippets from localStorage
 async function getLastInput() {
   let textBox = document.querySelector("#snips-textarea");
   //load in previous text if it was not saved or popup lost focus
