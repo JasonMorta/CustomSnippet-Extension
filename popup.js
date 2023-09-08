@@ -16,6 +16,9 @@ let count = 0;
 async function renderList(array) {
   console.log(`%c Build List`, 'color: teal')
 
+  console.log('array', array)
+
+
   list.innerHTML = "";
   let updatedText = "";
   let prevVal = [];
@@ -31,7 +34,7 @@ async function renderList(array) {
     head.style.marginLeft = "10px";
     //Only add the heading if it exists
 
-    if (item.title.length > 0) {
+    if (item.title?.length > 0) {
       head.innerHTML = `<b style='color:${item.title[1]}'>${item.title[0]}</b>`; // add heading about snip
       snipCon.prepend(head);
     } else {
@@ -70,12 +73,21 @@ async function renderList(array) {
       up.classList.remove("fade-snip-btn");
       snip.classList.remove("my-snippet-overflow");
 
+      //Console.log CSS 
+      let logCss = `
+       background-color: white; 
+       font-size: 13px; 
+       color: black;
+       `
+      console.log(`%c enterText ${item}`, logCss)
+
       //ONLY UPDATE LIST IF CHANGES WERE MADE
       if (prevVal[i] != snip.value) {
+
         //EXTRACT UPDATED TEXT FROM SNIP ELEMENT
         item.text = snip.value;
         //UPDATE list
-        storeArrayData(snippetObject);
+        storeArrayData(item, item.title);
       }
     });
 
@@ -100,9 +112,12 @@ async function renderList(array) {
       snipCon.className += " slide-out-left";
 
       snippetObject.splice(snippetObject.indexOf(item), 1);
+      console.log('item', item)
 
       setTimeout(() => {
-        storeArrayData(snippetObject);
+        // storeArrayData(snippetObject);
+        deleteFromStorage(item?.title[0])
+        console.log('item', item.title[0])
       }, 500);
     });
     snipCon.appendChild(del);
@@ -195,6 +210,7 @@ async function renderList(array) {
     hide.alt = "hide & show text";
     hide.title = item.hide ? "Show" : "Hide";
     hide.addEventListener("click", async () => {
+      console.log(`%c Hide Text`, 'color: orange')
       if (item.hide == true) {
         item.hide = false;
         hide.src = "./static/images/invisible.png";
@@ -203,8 +219,11 @@ async function renderList(array) {
         hide.src = "./static/images/eye.png";
       }
 
+
+
       //Call updated list
-      storeArrayData(snippetObject);
+      updatedStorageItem(item.title, item)
+
     });
 
     //fadeout the buttons when editing snip
@@ -222,14 +241,14 @@ async function renderList(array) {
   bottomLine();
 } //end of renderList func
 
-//!  Store to chrome storage
+//!  Store NEW item to chrome storage
 //only called when updating array
 async function storeArrayData(snip, title) {
+
 
   console.log(`%c Set Storage`, 'color: #2196f3')
   const now = new Date();
   let currentDate = date.format(now, 'YYYY/MM/DD HH:mm:ss')
-  let storageLength = 0
   //check if array is empty
 
   //chrome.storage.sync.set({ [key]: array });
@@ -240,10 +259,10 @@ async function storeArrayData(snip, title) {
   //   });
 
 
-  //const noteContent = JSON.stringify(array)
-  console.log('snip', snip)
   //save not to local storage, including data
+  console.log('title[0]', title[0])
   const uniqueKey = `${title[0] ?? ""} - ${currentDate}`;
+
 
   //since storage wont contains any other keys, special keys are not required.(however, a key that uses the same name, will replace existing ones)
 
@@ -259,52 +278,25 @@ async function storeArrayData(snip, title) {
 }
 
 //! Get chrome data
-async function retrieveArrayData() {
+function retrieveArrayData() {
   console.log(`%c GET Storage`, 'color: #2196f3')
   //chrome.storage.sync.clear()
 
- 
-
   //find all snippets by key name
   chrome.storage.sync.get(null, function (snips) {
-    console.log('items', snips)// returns an object(s)
- 
+    //console.log('items', snips)// returns an object(s)
+
     // loop though the storage object,, extract the value object, push it to array
     for (const key in snips) {
-      if (snips.hasOwnProperty(key)) {
-        const value = snips[key];
-         snippetObject.unshift(value)
-      }
+      const value = snips[key];
+      snippetObject.unshift(value)
+
     }
 
-  });
-
-  console.log('snippetObject')
-  console.log(snippetObject)
     //render updated list
     renderList(snippetObject);
- 
+  });
 
-  // await chrome.storage.sync.get(null, (data) => {
-  //   // Get all the stored chunks
-  //   const keys = Object.keys(data).filter((key) =>
-  //     key.startsWith("myArrayChunk")
-  //   );
-  //   if (keys.length > 0) {
-  //     // Combine the chunks into a single array
-  //     const storedArray = keys
-  //       .sort()
-  //       .map((key) => data[key])
-  //       .flat();
-  //     // Do something with the array...
-  //     snippetObject = storedArray;
-
-  //     renderList(snippetObject);
-  //   } else {
-  //     // No array was found in chrome.storage.sync
-  //     console.log("snippetsObject not found");
-  //   }
-  // });
 }
 
 //! SAVE new item element
@@ -357,20 +349,20 @@ function saveUserInput() {
 
       //replace heading/color name with custom heading
       snippetObject.unshift(snip); //!Create snip array object
-      storeArrayData(snip, snip.title[0]);
+      storeArrayData(snip, snip.title);
       textBox.value = "";
 
       //Just for plain text
     } else if (textBox.value != " ") {
       snippetObject.unshift({ text: textBox.value, title: [], hide: false, date: currentDate, id: snippetObject.length }); //!Create snip array object
-      storeArrayData(snip, " ");
+      storeArrayData(snip, "");
       textBox.value = "";
     }
     //Store any text that was'nt saved of when popup lost focus
     localStorage.setItem("snipInput", JSON.stringify(textBox.value));
     console.log('snippetObject')
     console.log(snippetObject)
-    
+
     //render updated list
     renderList(snippetObject);
   });
@@ -417,6 +409,117 @@ function bottomLine() {
     lastSnip[lastSnip.length - 1].style = "border-bottom: 3px solid #f44336;";
   }
 }
+
+//remove a snip/key from Chrome storage after delete
+async function deleteFromStorage(name) {
+  let keyName = '';
+
+  console.log(`%c deleteFromStorage`, 'color: green')
+
+  // loop though the storage find the key or the related item
+  chrome.storage.sync.get(null, function (snips) {
+
+    for (const key in snips) {
+      const value = snips[key]; //key all values
+      console.log('value', value)
+      //extracts the key name or queried object
+      if (value.title[0].includes(name[0])) {
+        keyName = key
+      }
+
+
+    }
+
+    removeStorageItem(keyName)
+    //re-render list
+    renderList(snippetObject)
+  })
+
+
+
+}
+
+//update existing snippets
+function updatedStorageItem(keyName, newValues) {
+
+  //2. Create a new key with updated values
+
+  // 1. Retrieve the current value from storage
+  chrome.storage.sync.get(keyName[0], function (result) {
+    console.log('result', result)
+    if (chrome.runtime.lastError) {
+      console.log(chrome.runtime.lastError);
+      return;
+    }
+
+    const updateData = {
+      [keyName]: newValues,
+    };
+
+    chrome.storage.sync.set(updateData, function () {
+      if (chrome.runtime.lastError) {
+        console.error(chrome.runtime.lastError);
+      } else {
+        renderList(snippetObject)
+      }
+    });
+  });
+  /* 
+  We first use chrome.storage.sync.get to retrieve the current value associated with the key 'your_key_name_here'.
+  
+  Inside the callback function, we modify the retrieved value. In this example, we assume that the value is an 
+  object and update a specific property within that object (keyToUpdate: 'new_value').
+  
+  We then create an update data object (updateData) with the key 'your_key_name_here' and the updated value (newValue).
+  
+  Finally, we use chrome.storage.sync.set to update the value in storage. The callback function for 
+  chrome.storage.sync.set is used to handle any errors or log a success message.
+  
+  Make sure to replace 'your_key_name_here' with the actual key you want to update and modify the update 
+  logic to suit your specific use case.
+  
+  */
+
+}
+
+//Find and returns the item key and value form localStorage by the fist tile name(keyName use title[0])
+function findArrayItemInStorage(title) {
+  let item = {
+    keyName: '',
+    value: ''
+  }
+  console.log(`%c deleteFromStorage`, 'color: green')
+
+  // loop though the storage find the key or the related item
+  chrome.storage.sync.get(null, function (snips) {
+
+    for (const key in snips) {
+      item.value = snips[key]; //key all values
+
+      //extracts the key name or queried object
+      if (item.value.title[0].includes(title[0])) {
+        item.keyName = key
+      }
+    }
+    return item
+  })
+}
+
+
+//Remove a snippet from chrome by keyName
+function removeStorageItem(keyName) {
+  //Remove key from storage
+  chrome.storage.sync.remove(keyName, function () {
+    // Return any errors if they occur
+    if (chrome.runtime.lastError) return console.log(chrome.runtime.lastError);
+
+    // Key has been successfully removed
+    console.log(`Snip "${keyName}" has been removed from Chrome storage.`);
+
+  });
+}
+
+
 addHeading();
 getLastInput();
 retrieveArrayData(); //get array
