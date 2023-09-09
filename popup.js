@@ -15,12 +15,10 @@ let count = 0;
 //!Render list
 async function renderList(array) {
   console.log(`%c Build List`, 'color: teal')
-
-  console.log('array', array)
+  console.log('renderList', array)
 
 
   list.innerHTML = "";
-  let updatedText = "";
   let prevVal = [];
 
   //! loop
@@ -47,16 +45,20 @@ async function renderList(array) {
     snip.cols = "50";
     snip.setAttribute("contenteditable", "true");
     snip.value = item.text;
+   
     snip.style.fontFamily = `${item.hide ? "barcode" : "FiraCode"}`;
     snip.style.fontSize = `${item.hide ? "initial" : "inherit"}`;
     prevVal[i] = snip.value; //store current text in array
 
-    //Handle textarea auto sizing on load
-    const textLength = snip.value.length;
-    const colWidth = 38; // Adjust this value to your liking
-    const numCols = Math.ceil(textLength / colWidth);
-    snip.rows = numCols
-
+    // //Handle textarea auto sizing on load
+    // const textLength = snip.value.length;
+    // const colWidth = 38; // Adjust this value to your liking
+    // const numCols = Math.ceil(textLength / colWidth);
+    // snip.rows = numCols
+    snip.style.height = ''; // Reset the height to allow recalculation
+    console.log('snip.scrollHeight', snip.scrollHeight)
+    snip.style.height = (snip.value.length + 60)+ "px"; // Set the height to the scroll height of the content
+    console.log('snip.value', )
 
 
     //! Update item
@@ -73,26 +75,15 @@ async function renderList(array) {
       up.classList.remove("fade-snip-btn");
       snip.classList.remove("my-snippet-overflow");
 
-      //Console.log CSS 
-      let logCss = `
-       background-color: white; 
-       font-size: 13px; 
-       color: black;
-       `
-      console.log(`%c enterText ${item}`, logCss)
-
       //ONLY UPDATE LIST IF CHANGES WERE MADE
       if (prevVal[i] != snip.value) {
 
         //EXTRACT UPDATED TEXT FROM SNIP ELEMENT
         item.text = snip.value;
         //UPDATE list
-        storeArrayData(item, item.title);
+        storeArrayData(item, item.date);
       }
     });
-
-
-
 
 
     snipCon.appendChild(snip);
@@ -116,8 +107,7 @@ async function renderList(array) {
 
       setTimeout(() => {
         // storeArrayData(snippetObject);
-        deleteFromStorage(item?.title[0])
-        console.log('item', item.title[0])
+        removeStorageItem(item.date)
       }, 500);
     });
     snipCon.appendChild(del);
@@ -178,31 +168,32 @@ async function renderList(array) {
     });
     snipCon.appendChild(copy);
 
-    //! Move up
+    //! Move
     let up = document.createElement("img");
     up.src = "./up.png";
-    up.className = "move-snip snip-btn";
+    up.className = "move-snip snip-btn handle";
     up.alt = "up";
     up.title = "Move up";
-    up.addEventListener("click", async () => {
-      //extract the selected snip and id
-      let extracted = snippetObject.splice(i, 1, item[i]);
-      let itemId = snippetObject.splice(i, 1, item[i].id)
-      //prevent reaching into index -1
-      //When snip is at indx 0, it can be moved up anymore
+    up.style.cursor = "grab";
+    // up.addEventListener("click", async () => {
+    //   //extract the selected snip and id
+    //   let extracted = snippetObject.splice(i, 1, item[i]);
+    //   let itemId = snippetObject.splice(i, 1, item[i].id)
+    //   //prevent reaching into index -1
+    //   //When snip is at indx 0, it can be moved up anymore
 
-      //replace selected index item with the previous index item,
-      //making both the same
-      snippetObject.splice(i, 1, snippetObject[i - 1]);
+    //   //replace selected index item with the previous index item,
+    //   //making both the same
+    //   snippetObject.splice(i, 1, snippetObject[i - 1]);
 
-      //when selecting an item, target the previous ones index,
-      //and replace it with extracted snip
-      snippetObject.splice(i - 1, 1, extracted[0]);
-      //}
+    //   //when selecting an item, target the previous ones index,
+    //   //and replace it with extracted snip
+    //   snippetObject.splice(i - 1, 1, extracted[0]);
+    //   //}
 
-      //Call updated list
-      storeArrayData(snippetObject);
-    });
+    //   //Call updated list
+    //   updateArray(snippetObject);
+   //});
 
     //! HIDE
     let hide = document.createElement("img");
@@ -215,15 +206,17 @@ async function renderList(array) {
       if (item.hide == true) {
         item.hide = false;
         hide.src = "./static/images/invisible.png";
+       await chrome.storage.sync.set({[item.date]: item })
       } else {
         item.hide = true;
         hide.src = "./static/images/eye.png";
+       await chrome.storage.sync.set({[item.date]: item })
       }
 
 
 
       //Call updated list
-      updatedStorageItem(item.title, item)
+      renderList(snippetObject);
 
     });
 
@@ -240,39 +233,19 @@ async function renderList(array) {
     list.appendChild(snipCon);
   }); //For each end
   bottomLine();
+  moveItem()
 } //end of renderList func
 
-//!  Store NEW item to chrome storage
+//!  Store 1 NEW item to chrome storage
 //only called when updating array
 async function storeArrayData(snip, dateStamp) {
-
-
   console.log(`%c Set Storage`, 'color: #2196f3')
-  //const now = new Date();
-  //let currentDate = date.format(now, 'YYYY/MM/DD HH:mm:ss')
-  //check if array is empty
-
-  //chrome.storage.sync.set({ [key]: array });
-
-  // await chrome.storage.sync.get(null, function(items) { 
-  //   storageLength = .keys(items).length
-  //   console.log('storageLength', storageLength)Object
-  //   });
-
-
   //save not to local storage, including data
-
   const uniqueKey = `${dateStamp}`;
-
-
   //since storage wont contains any other keys, special keys are not required.(however, a key that uses the same name, will replace existing ones)
-
   chrome.storage.sync.set({ [uniqueKey]: snip }).then(() => {
     console.log("Snip saved");
   });
-
-
-
 
   //after storing new data, get the array again
   renderList(snippetObject);
@@ -281,21 +254,22 @@ async function storeArrayData(snip, dateStamp) {
 //! Get chrome data
 function retrieveArrayData() {
   console.log(`%c GET Storage`, 'color: #2196f3')
-  //chrome.storage.sync.clear()
+  
+  snippetObject = []
 
   //find all snippets by key name
   chrome.storage.sync.get(null, function (snips) {
-    //console.log('items', snips)// returns an object(s)
-
     // loop though the storage object,, extract the value object, push it to array
     for (const key in snips) {
       const value = snips[key];
       snippetObject.unshift(value)
-
     }
 
+    //sort array
+    sortArray()
+
     //render updated list
-    renderList(snippetObject.sort(function (a, b) { return b.id - a.id }));
+    renderList(snippetObject);
   });
 
 }
@@ -321,26 +295,29 @@ function saveUserInput() {
 
   let saveBtn = document.querySelector("#snips-save-btn");
   saveBtn.className = "btn-grad";
+  saveBtn.disable = true;
   saveBtn.addEventListener("click", () => {
     let snip;
     const now = new Date();
     let currentDate = date.format(now, 'YYYY/MM/DD HH:mm:ss')
     //Check if heading was added
     //remove heading and first line break if added
+    if (textBox.value === "") return
     if (textBox.value.match(/^<.*>/gi)) {
+      saveBtn.disable = false;
       //place heading and color in array  ['HeaderName', 'color']
       getHeading = textBox.value
         .match(/^<.*>/gi)
         .toString()
         .replace(/<|>/g, "", "")
         .split(","); //get heading & color as array
-      textOnly = textBox.value.replace(/^<.*>/gi, "").replace("\n", ""); //gets all the text
+      textOnly = textBox?.value.replace(/^<.*>/gi, "").replace("\n", ""); //gets all the text
 
        snip = {
         text: textOnly,
         title: [getHeading],
         date: currentDate,
-        id: snippetObject.length,
+        id: snippetObject[0]?.id ?? 0,
         hide: false
       }
 
@@ -354,6 +331,7 @@ function saveUserInput() {
 
       //Just for plain text
     } else if (textBox.value != " ") {
+      saveBtn.disable = false;
       snip = { 
         text: textBox.value, 
         title: [], 
@@ -365,16 +343,14 @@ function saveUserInput() {
       snippetObject.unshift(snip); //!Create snip array object
 
       //save to storage
-      storeArrayData(snip, currentDate);
+      chrome.storage.sync.set({[item.date]: item })
       textBox.value = "";
+      renderList(snippetObject);
     }
     //Store any text that was'nt saved of when popup lost focus
     localStorage.setItem("snipInput", JSON.stringify(textBox.value));
-    console.log('snippetObject')
-    console.log(snippetObject)
-
     //render updated list
-    renderList(snippetObject);
+    //renderList(snippetObject);
   });
 }
 
@@ -416,38 +392,10 @@ function bottomLine() {
   //Add a line at bottom of list
   let lastSnip = document.querySelectorAll(".snippet-container");
   if (lastSnip.length !== 0) {
-    lastSnip[lastSnip.length - 1].style = "border-bottom: 3px solid #f44336;";
+    //lastSnip[lastSnip.length - 1].style = "border-bottom: 3px solid #f44336;";
   }
 }
 
-//remove a snip/key from Chrome storage after delete
-async function deleteFromStorage(data) {
-  console.log(`%c deleteFromStorage`, 'color: green')
-
-  console.log('name', data)
-  let keyName = '';
-
-  // loop though the storage find the keyName or the related item
-  chrome.storage.sync.get(null, function (snips) {
-
-    for (const key in snips) {
-      const value = snips[key]; //key all values
-      console.log('value', value)
-      //extracts the key name of queried object
-      if (value.data.includes(data)) {
-        keyName = key
-      }
-
-
-    }
-    // pass keyName to remove function
-    removeStorageItem(keyName)
-
-  })
-
-
-
-}
 
 //update existing snippets
 function updatedStorageItem(keyName, newValues) {
@@ -498,7 +446,7 @@ function findArrayItemInStorage(title) {
     keyName: '',
     value: ''
   }
-  console.log(`%c deleteFromStorage`, 'color: green')
+
 
   // loop though the storage find the key or the related item
   chrome.storage.sync.get(null, function (snips) {
@@ -530,8 +478,78 @@ function removeStorageItem(keyName) {
   });
 }
 
+//Move items by dragging and dropping
+//uses the sortable.js library : https://sortablejs.github.io/Sortable/
+function moveItem() {
+  console.log('moveItem')
+	let extracted;
+  let el = document.querySelector(".snips-inner");
+  
+	Sortable.create(el, {
+		animation: 150,
+    handle: ".handle",
+
+		onStart: function (/**Event*/evt) {
+
+			if (evt.oldIndex !== -1) {
+				// Remove item5 from its current position
+				extracted = snippetObject.splice(evt.oldIndex, 1);
+    
+			}
+
+		},
+		onEnd: function (/**Event*/evt) {
+
+			if (evt.newIndex !== -1) {
+				// Insert item5 at index 1
+				snippetObject.splice(evt.newIndex, 0, extracted[0]);
+
+			}
+
+ 
+
+      //update array items id order
+      snippetObject.forEach((item, i) => item.id = i)
+      //update storage items
+      updateStorageItems()
+		},
+
+	});
+}
+
+
+//sort array by id in ascending order and update every items id to match its index
+function sortArray() {
+  snippetObject.sort(function (a, b) { return a.id - b.id });
+  //snippetObject.forEach((item, i) => item.id = i)
+}
+
+//updated storage new array items position/id
+function updateStorageItems() {
+  console.log(`%c Set Storage`, 'color: #2196f3')
+  
+  snippetObject.forEach(item => {
+    //update each item in storage
+    chrome.storage.sync.set({[item.date]: item }).then(() => {
+      //renderList(snippetObject)
+    })
+  })
+}
+
 
 addHeading();
 getLastInput();
 retrieveArrayData(); //get array
 saveUserInput();
+
+
+let clearStorage = document.querySelector('#snips-clear-btn').addEventListener('click', () => {
+  let con = confirm('🚨Are you sure you want to clear all snippets? \n🚨This action cannot be undone.')
+  if (con) {
+    chrome.storage.sync.clear()
+    snippetObject = []
+    renderList(snippetObject)
+  }
+  
+})
+

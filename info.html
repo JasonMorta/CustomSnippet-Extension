@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suppa snips</title>
+</head>
+<style>
+   body {
+      display: flex;
+      flex-wrap: wrap;
+      flex-direction: row;
+      min-width: 350px;
+      background-color: #151718 !important;
+      justify-content: center;
+      color: white !important;
+      font-family: system-ui, sans-serif;
+   }
+
+   .div {
+      display: flex;
+      flex-direction: column;
+      background-image: linear-gradient(to right bottom, rgb(47, 49, 52), rgb(38, 38, 40), rgb(28, 27, 29), rgb(18, 17, 17), rgb(0, 0, 0));
+      margin: 20px;
+      box-shadow: 0 0px 3px 0px #8bc34a2e;
+      border-radius: 3px;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      position: relative;
+      min-width: 400px;
+      height: auto;
+      padding: 20px;
+      font-family: unset;
+      font-size: large;
+      transition: .3s;
+   }
+
+   .div:hover {
+      box-shadow: 0 0px 3px 0px #8bc34a94;
+   }
+   .snip-allUsers p {
+      margin: 0px;
+   }
+
+</style>
+
+<body>
+   <div class="div" id="mainDiv1">
+
+      <div class="snip-infoBloock snip-allUsers">
+         <h1>Usage</h1>
+         <p>Double click the trash icon to delete</p>
+         <p>Drag the "drag icon" up or down to move snippets</p>
+         <p>Hover text will appear for tips</p>
+      </div>
+ 
+
+        <div class="snip-infoBloock snip-allUsers">
+           <h1>Adding a header to snippet</h1>
+           <p>Selecting "↙ CSS Heading" will insert "◂HeaderName,color▸" into textfield.</p>
+           <p>"◂HeaderName,color▸", replace HeaderName with any name for your heading. Color will be applied to the heading</p>
+           <p>Colors can be: any CSS color code or the name of the color.</p>
+        </div>
+         <br>
+        <div class="snip-infoBloock snip-review">
+         <h1>For Cogrammer reviews</h1>
+           <p>{name} will be replaced with student name when copied</p>
+           <p>{topic} will be replaced with task topic name when copied(always check this).</p>
+        </div>
+
+  
+
+       </div>
+ </div>
+
+</body>
+
+</html>

@@ -7,33 +7,16 @@
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <script src="date-and-time.min.js"></script>
+   <script src="sortable.mini.js"></script>
    <script src="popup.js" defer> </script>
    <!-- <script src="storage-array.js" defer> </script> -->
-      <script src="./info-script.js" defer> </script>
    <title>Snips</title>
 </head>
 <body class="snips-body">
           <!-- info container -->
-          <div class="snip-info">
-
-            <img class="snip-info-btnC" src="./static/images/close.png" alt="close button">
-   
-            <div class="snip-infoBloock snip-allUsers">
-               <p class="snip-info-header"><b>Adding a header to snippet</b></p>
-               <p>Selecting "↙ CSS Heading" will insert "◂HeaderName,color▸" into textfield.</p>
-               <p>"◂HeaderName,color▸", replace HeaderName with any name for your heading. Color will be applied to the heading</p>
-               <p>Colors can be: any CSS color code or the name of the color.</p>
-            </div>
-            
-            <div class="snip-infoBloock snip-review">
-               <p class="snip-info-header"><b>For Cogrammer reviews</b></p>
-               <p>{name} will be replaced with student name when copied</p>
-               <p>{topic} will be replaced with task topic name when copied(always check this).</p>
-            </div>
-   
-         </div>
+ 
    <div class="snips-container snips-main">
-       <img class="snip-info-btnO" src="./static/images/info.png" alt="info button">
+      <a href="./info.html" target="_blank"> <img class="snip-info-btnO" src="./static/images/info.png" alt="info button"></a>
 
 
 
@@ -43,6 +26,7 @@
          <span class="add-heading"> ↙ CSS Heading </span>
          <textarea id="snips-textarea" placeholder="Enter some text" name="custom" rows="4" cols="50" maxlength="1000"></textarea>
          <input type="button" value="SAVE" id="snips-save-btn">
+         <input type="button" value="CLEAR" id="snips-clear-btn">
       </div>
 
       <!-- list container -->
