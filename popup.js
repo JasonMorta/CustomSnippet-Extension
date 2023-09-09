@@ -33,9 +33,9 @@ async function renderList(array) {
     head.style.textAlign = "left";
     head.style.marginLeft = "10px";
     //Only add the heading if it exists
-
     if (item.title?.length > 0) {
-      head.innerHTML = `<b style='color:${item.title[1]}'>${item.title[0]}</b>`; // add heading about snip
+      head.innerHTML = `<b style='color:${item.title[0][1]}'>${item.title[0][0]}</b>`; // add heading about snip
+
       snipCon.prepend(head);
     } else {
       head.innerHTML = ``;
@@ -185,8 +185,9 @@ async function renderList(array) {
     up.alt = "up";
     up.title = "Move up";
     up.addEventListener("click", async () => {
-      //extract the selected snip
+      //extract the selected snip and id
       let extracted = snippetObject.splice(i, 1, item[i]);
+      let itemId = snippetObject.splice(i, 1, item[i].id)
       //prevent reaching into index -1
       //When snip is at indx 0, it can be moved up anymore
 
@@ -243,12 +244,12 @@ async function renderList(array) {
 
 //!  Store NEW item to chrome storage
 //only called when updating array
-async function storeArrayData(snip, title) {
+async function storeArrayData(snip, dateStamp) {
 
 
   console.log(`%c Set Storage`, 'color: #2196f3')
-  const now = new Date();
-  let currentDate = date.format(now, 'YYYY/MM/DD HH:mm:ss')
+  //const now = new Date();
+  //let currentDate = date.format(now, 'YYYY/MM/DD HH:mm:ss')
   //check if array is empty
 
   //chrome.storage.sync.set({ [key]: array });
@@ -260,8 +261,8 @@ async function storeArrayData(snip, title) {
 
 
   //save not to local storage, including data
-  console.log('title[0]', title[0])
-  const uniqueKey = `${title[0] ?? ""} - ${currentDate}`;
+
+  const uniqueKey = `${dateStamp}`;
 
 
   //since storage wont contains any other keys, special keys are not required.(however, a key that uses the same name, will replace existing ones)
@@ -294,7 +295,7 @@ function retrieveArrayData() {
     }
 
     //render updated list
-    renderList(snippetObject);
+    renderList(snippetObject.sort(function (a, b) { return b.id - a.id }));
   });
 
 }
@@ -321,6 +322,7 @@ function saveUserInput() {
   let saveBtn = document.querySelector("#snips-save-btn");
   saveBtn.className = "btn-grad";
   saveBtn.addEventListener("click", () => {
+    let snip;
     const now = new Date();
     let currentDate = date.format(now, 'YYYY/MM/DD HH:mm:ss')
     //Check if heading was added
@@ -334,9 +336,7 @@ function saveUserInput() {
         .split(","); //get heading & color as array
       textOnly = textBox.value.replace(/^<.*>/gi, "").replace("\n", ""); //gets all the text
 
-
-
-      let snip = {
+       snip = {
         text: textOnly,
         title: [getHeading],
         date: currentDate,
@@ -349,13 +349,23 @@ function saveUserInput() {
 
       //replace heading/color name with custom heading
       snippetObject.unshift(snip); //!Create snip array object
-      storeArrayData(snip, snip.title);
+      storeArrayData(snip, currentDate);
       textBox.value = "";
 
       //Just for plain text
     } else if (textBox.value != " ") {
-      snippetObject.unshift({ text: textBox.value, title: [], hide: false, date: currentDate, id: snippetObject.length }); //!Create snip array object
-      storeArrayData(snip, "");
+      snip = { 
+        text: textBox.value, 
+        title: [], 
+        hide: false, 
+        date: currentDate, 
+        id: snippetObject.length 
+      }
+
+      snippetObject.unshift(snip); //!Create snip array object
+
+      //save to storage
+      storeArrayData(snip, currentDate);
       textBox.value = "";
     }
     //Store any text that was'nt saved of when popup lost focus
@@ -411,28 +421,28 @@ function bottomLine() {
 }
 
 //remove a snip/key from Chrome storage after delete
-async function deleteFromStorage(name) {
-  let keyName = '';
-
+async function deleteFromStorage(data) {
   console.log(`%c deleteFromStorage`, 'color: green')
 
-  // loop though the storage find the key or the related item
+  console.log('name', data)
+  let keyName = '';
+
+  // loop though the storage find the keyName or the related item
   chrome.storage.sync.get(null, function (snips) {
 
     for (const key in snips) {
       const value = snips[key]; //key all values
       console.log('value', value)
-      //extracts the key name or queried object
-      if (value.title[0].includes(name[0])) {
+      //extracts the key name of queried object
+      if (value.data.includes(data)) {
         keyName = key
       }
 
 
     }
-
+    // pass keyName to remove function
     removeStorageItem(keyName)
-    //re-render list
-    renderList(snippetObject)
+
   })
 
 
@@ -482,7 +492,7 @@ function updatedStorageItem(keyName, newValues) {
 
 }
 
-//Find and returns the item key and value form localStorage by the fist tile name(keyName use title[0])
+//Find and returns single item [key: value] form localStorage by the fist tile name(keyName use title[0])
 function findArrayItemInStorage(title) {
   let item = {
     keyName: '',
@@ -515,7 +525,8 @@ function removeStorageItem(keyName) {
 
     // Key has been successfully removed
     console.log(`Snip "${keyName}" has been removed from Chrome storage.`);
-
+    //re-render list
+    renderList(snippetObject)
   });
 }
 
