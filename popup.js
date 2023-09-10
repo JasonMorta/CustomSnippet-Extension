@@ -45,7 +45,7 @@ async function renderList(array) {
     snip.cols = "50";
     snip.setAttribute("contenteditable", "true");
     snip.value = item.text;
-   
+
     snip.style.fontFamily = `${item.hide ? "barcode" : "FiraCode"}`;
     snip.style.fontSize = `${item.hide ? "initial" : "inherit"}`;
     prevVal[i] = snip.value; //store current text in array
@@ -175,25 +175,6 @@ async function renderList(array) {
     up.alt = "up";
     up.title = "Move up-down";
     up.style.cursor = "grab";
-    // up.addEventListener("click", async () => {
-    //   //extract the selected snip and id
-    //   let extracted = snippetObject.splice(i, 1, item[i]);
-    //   let itemId = snippetObject.splice(i, 1, item[i].id)
-    //   //prevent reaching into index -1
-    //   //When snip is at indx 0, it can be moved up anymore
-
-    //   //replace selected index item with the previous index item,
-    //   //making both the same
-    //   snippetObject.splice(i, 1, snippetObject[i - 1]);
-
-    //   //when selecting an item, target the previous ones index,
-    //   //and replace it with extracted snip
-    //   snippetObject.splice(i - 1, 1, extracted[0]);
-    //   //}
-
-    //   //Call updated list
-    //   updateArray(snippetObject);
-   //});
 
     //! HIDE
     let hide = document.createElement("img");
@@ -206,14 +187,12 @@ async function renderList(array) {
       if (item.hide == true) {
         item.hide = false;
         hide.src = "./static/images/invisible.png";
-       await chrome.storage.sync.set({[item.date]: item })
+        await chrome.storage.sync.set({ [item.date]: item })
       } else {
         item.hide = true;
         hide.src = "./static/images/eye.png";
-       await chrome.storage.sync.set({[item.date]: item })
+        await chrome.storage.sync.set({ [item.date]: item })
       }
-
-
 
       //Call updated list
       renderList(snippetObject);
@@ -254,7 +233,7 @@ async function storeArrayData(snip, dateStamp) {
 //! Get chrome data
 function retrieveArrayData() {
   console.log(`%c GET Storage`, 'color: #2196f3')
-  
+
   snippetObject = []
 
   //find all snippets by key name
@@ -313,7 +292,7 @@ function saveUserInput() {
         .split(","); //get heading & color as array
       textOnly = textBox?.value.replace(/^<.*>/gi, "").replace("\n", ""); //gets all the text
 
-       snip = {
+      snip = {
         text: textOnly,
         title: [getHeading],
         date: currentDate,
@@ -332,18 +311,18 @@ function saveUserInput() {
       //Just for plain text
     } else if (textBox.value != " ") {
       saveBtn.disable = false;
-      snip = { 
-        text: textBox.value, 
-        title: [], 
-        hide: false, 
-        date: currentDate, 
-        id: snippetObject.length 
+      snip = {
+        text: textBox.value,
+        title: [],
+        hide: false,
+        date: currentDate,
+        id: snippetObject.length
       }
 
       snippetObject.unshift(snip); //!Create snip array object
 
       //save to storage
-      chrome.storage.sync.set({[item.date]: item })
+      chrome.storage.sync.set({ [item.date]: item })
       textBox.value = "";
       renderList(snippetObject);
     }
@@ -482,39 +461,39 @@ function removeStorageItem(keyName) {
 //uses the sortable.js library : https://sortablejs.github.io/Sortable/
 function moveItem() {
   console.log('moveItem')
-	let extracted;
+  let extracted;
   let el = document.querySelector(".snips-inner");
-  
-	Sortable.create(el, {
-		animation: 150,
+
+  Sortable.create(el, {
+    animation: 150,
     handle: ".handle",
 
-		onStart: function (/**Event*/evt) {
+    onStart: function (/**Event*/evt) {
 
-			if (evt.oldIndex !== -1) {
-				// Remove item5 from its current position
-				extracted = snippetObject.splice(evt.oldIndex, 1);
-    
-			}
+      if (evt.oldIndex !== -1) {
+        // Remove item5 from its current position
+        extracted = snippetObject.splice(evt.oldIndex, 1);
 
-		},
-		onEnd: function (/**Event*/evt) {
+      }
 
-			if (evt.newIndex !== -1) {
-				// Insert item5 at index 1
-				snippetObject.splice(evt.newIndex, 0, extracted[0]);
+    },
+    onEnd: function (/**Event*/evt) {
 
-			}
+      if (evt.newIndex !== -1) {
+        // Insert item5 at index 1
+        snippetObject.splice(evt.newIndex, 0, extracted[0]);
 
- 
+      }
+
+
 
       //update array items id order
       snippetObject.forEach((item, i) => item.id = i)
       //update storage items
       updateStorageItems()
-		},
+    },
 
-	});
+  });
 }
 
 
@@ -527,10 +506,10 @@ function sortArray() {
 //updated storage new array items position/id
 function updateStorageItems() {
   console.log(`%c Set Storage`, 'color: #2196f3')
-  
+
   snippetObject.forEach(item => {
     //update each item in storage
-    chrome.storage.sync.set({[item.date]: item }).then(() => {
+    chrome.storage.sync.set({ [item.date]: item }).then(() => {
       //renderList(snippetObject)
     })
   })
@@ -550,6 +529,6 @@ let clearStorage = document.querySelector('#snips-clear-btn').addEventListener('
     snippetObject = []
     renderList(snippetObject)
   }
-  
+
 })
 
