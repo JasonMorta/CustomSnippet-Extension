@@ -158,7 +158,7 @@ async function renderList(array) {
 
         let filterComplete = filteredName.replaceAll(
           "{topic}",
-          topic?.toLowerCase()?.trim()
+          topic.toLowerCase()?.trim()
         );
         navigator.clipboard.writeText(filterComplete);
       } else {
@@ -241,7 +241,12 @@ function retrieveArrayData() {
     // loop though the storage object,, extract the value object, push it to array
     for (const key in snips) {
       const value = snips[key];
+    // only push the object to array if it contains a data property to avoid adding other objects
+    if (value.date ){
       snippetObject.unshift(value)
+    }
+  
+   
     }
 
     //sort array
@@ -249,6 +254,7 @@ function retrieveArrayData() {
 
     //render updated list
     renderList(snippetObject);
+    console.log('snippetObject', snippetObject)
   });
 
 }
@@ -349,6 +355,7 @@ async function getLastInput() {
   if (localStorage.getItem("snipInput") != "") {
     textBox.value = JSON.parse(localStorage.getItem("snipInput"));
   }
+ 
   await chrome.storage.sync.get("contentData").then((result) => {
     if (result.contentData != null) {
       data = result;
