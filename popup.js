@@ -50,15 +50,15 @@ async function renderList(array) {
     snip.style.fontSize = `${item.hide ? "initial" : "inherit"}`;
     prevVal[i] = snip.value; //store current text in array
 
-    // //Handle textarea auto sizing on load
-    // const textLength = snip.value.length;
-    // const colWidth = 38; // Adjust this value to your liking
-    // const numCols = Math.ceil(textLength / colWidth);
-    // snip.rows = numCols
-    snip.style.height = ''; // Reset the height to allow recalculation
-    console.log('snip.scrollHeight', snip.scrollHeight)
-    snip.style.height = (snip.value.length + 60)+ "px"; // Set the height to the scroll height of the content
-    console.log('snip.value', )
+    //Handle textarea auto sizing on load
+    const textLength = snip.value.length;
+    const colWidth = 55; // Adjust this value to your liking (higher numbers increases the scroll)
+    const numCols = Math.ceil(textLength / colWidth);
+    snip.rows = numCols
+    // snip.style.height = ''; // Reset the height to allow recalculation
+    // console.log('snip.scrollHeight', snip.scrollHeight)
+    // snip.style.height = (snip.value.length + 60)+ "px"; // Set the height to the scroll height of the content
+    // console.log('snip.value', )
 
 
     //! Update item
@@ -125,12 +125,12 @@ async function renderList(array) {
       //"COGRAMMER ONLY" URL. Filter out student and topic name.
       if (data != null) {
         //extract name only
-        trimmed1 = data.contentData.names[0].replace("Student: ", "").trim();
-        trimmed2 = trimmed1.split(" ");
+        trimmed1 = data.contentData?.names[0]?.replace("Student: ", "")?.trim();
+        trimmed2 = trimmed1?.split(" ");
         nameOnly = trimmed2[0];
 
         //Extract the task topic name
-        trimmedT1 = data.contentData.names[2].trim();
+        trimmedT1 = data.contentData?.names[2]?.trim();
 
         //Get the index of the second "-" in stringArray
         function getPosition(trimmedT1, string, index) {
@@ -154,11 +154,11 @@ async function renderList(array) {
         let topic = trimmedT1.slice(getPosition(trimmedT1, "-", count) + 1);
 
         //add student name and/or topic name to snippet text
-        let filteredName = item.text.replaceAll("{name}", nameOnly.trim());
+        let filteredName = item.text?.replaceAll("{name}", nameOnly?.trim());
 
         let filterComplete = filteredName.replaceAll(
           "{topic}",
-          topic.toLowerCase().trim()
+          topic?.toLowerCase()?.trim()
         );
         navigator.clipboard.writeText(filterComplete);
       } else {
@@ -173,7 +173,7 @@ async function renderList(array) {
     up.src = "./up.png";
     up.className = "move-snip snip-btn handle";
     up.alt = "up";
-    up.title = "Move up";
+    up.title = "Move up-down";
     up.style.cursor = "grab";
     // up.addEventListener("click", async () => {
     //   //extract the selected snip and id

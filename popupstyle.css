@@ -192,7 +192,8 @@
 
 .move-snip {
   position: absolute;
-  right: 0;
+  right: 50%;
+  transform: translateX(-50%);
   top: 5px;
 
   cursor: pointer;
