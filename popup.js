@@ -174,7 +174,7 @@ async function renderList(array) {
     up.className = "move-snip snip-btn handle";
     up.alt = "up";
     up.title = "Move up-down";
-    up.style.cursor = "grab";
+    
 
     //! HIDE
     let hide = document.createElement("img");
@@ -322,7 +322,7 @@ function saveUserInput() {
         title: [],
         hide: false,
         date: currentDate,
-        id: snippetObject.length
+        id: snippetObject[0]?.id ?? 0,
       }
 
       snippetObject.unshift(snip); //!Create snip array object

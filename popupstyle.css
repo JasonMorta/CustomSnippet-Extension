@@ -200,13 +200,14 @@
 }
 
 .move-snip:hover {
-  cursor: pointer;
+  cursor: url("./grab.png"), auto;
 }
 
 .move-snip:active {
   transform: scale(0.89) rotate(90deg);
-  cursor: pointer;
+  cursor: url("./hold.png"), auto;
 }
+
 
 .snippet-container:hover {
   background-color: #9797972b;
