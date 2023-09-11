@@ -532,17 +532,12 @@
 #snips-clear-btn {
   position: absolute;
   right: 0;
-  bottom: 0px;
-  font-size: 9px;
-  background-color: palevioletred;
-  border-radius: 6px;
-  border-bottom-right-radius: 0px;
-  border-bottom-left-radius: 0px;
+  bottom: 5px;
+  font-size: 10px;
   cursor: pointer;
+  color: #1dd5d5;
 }
 
 #snips-clear-btn:active {
-  background-color: #ff0000;
-  color: rgb(255, 255, 255);
-  border: 1px solid palevioletred;
+  color: red;
 }

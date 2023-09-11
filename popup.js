@@ -241,12 +241,12 @@ function retrieveArrayData() {
     // loop though the storage object,, extract the value object, push it to array
     for (const key in snips) {
       const value = snips[key];
-    // only push the object to array if it contains a data property to avoid adding other objects
-    if (value.date ){
-      snippetObject.unshift(value)
-    }
-  
-   
+      // only push the object to array if it contains a data property to avoid adding other objects
+      if (value.date) {
+        snippetObject.unshift(value)
+      }
+
+
     }
 
     //sort array
@@ -355,7 +355,7 @@ async function getLastInput() {
   if (localStorage.getItem("snipInput") != "") {
     textBox.value = JSON.parse(localStorage.getItem("snipInput"));
   }
- 
+
   await chrome.storage.sync.get("contentData").then((result) => {
     if (result.contentData != null) {
       data = result;
@@ -529,7 +529,15 @@ retrieveArrayData(); //get array
 saveUserInput();
 
 
-let clearStorage = document.querySelector('#snips-clear-btn').addEventListener('click', () => {
+let clearStorage = document.querySelector('#snips-clear-btn')
+// Change image on hover
+clearStorage.addEventListener('mouseover', () => {
+  clearStorage.src = "./static/images/clean-hover.png";
+})
+clearStorage.addEventListener('mouseleave', () => {
+  clearStorage.src = "./static/images/clean.png";
+})
+clearStorage.addEventListener('click', () => {
   let con = confirm('🚨Are you sure you want to clear all snippets? \n🚨This action cannot be undone.')
   if (con) {
     chrome.storage.sync.clear()
