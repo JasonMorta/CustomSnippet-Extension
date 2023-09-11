@@ -328,7 +328,7 @@ function saveUserInput() {
       snippetObject.unshift(snip); //!Create snip array object
 
       //save to storage
-      chrome.storage.sync.set({ [item.date]: item })
+      chrome.storage.sync.set({ [snip.date]: snip })
       textBox.value = "";
       renderList(snippetObject);
     }
