@@ -94,7 +94,7 @@
 .snippet-container {
   position: relative;
   width: 100%;
-  padding: 3px;
+
   transition: 1s linear;
   display: flex;
   flex-direction: column;
@@ -105,9 +105,13 @@
 
 .snippet-container p {
   position: relative;
-  height: 10px;
-  width: 100%;
+  width: 92%;
   transition: .2s;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  transition: .2s;
+  margin-left: 2px !important;
 }
 
 .snippet-container b {
@@ -117,7 +121,6 @@
 
 .snippet-container:hover b {
   font-size: initial;
-  position: absolute;
   transition: .2s;
   /* color: #f5f5f5 !important;
   text-shadow: 0px 0px 3px #f5f5f5, 0px 0px 2px #f5f5f5; */
@@ -126,18 +129,15 @@
 
 
 .my-snippet {
-  max-width: 370px;
+  max-width: 97%;
   min-width: 370px;
-  margin-left: 10px;
+  margin-left: 1px;
   white-space: pre-line;
   background-color: #2a282b40;
   color: #9e9e9e;
-  font-family: inherit;
-  font-size: inherit;
   border-radius: 5px;
   border: 0px;
   transition: .6s linear;
-  /* overflow: hidden; */
   min-height: 50px;
 }
 
@@ -188,6 +188,7 @@
   border-radius: 3px;
   transition: .2s ease-in;
   transform: translate(-8px, 0px);
+  width: 15px;
 }
 
 .move-snip {
@@ -212,7 +213,7 @@
 .snippet-container:hover {
   background-color: #9797972b;
   transition: .3s ease-in;
-  padding: 3px;
+  
 }
 
 .wordCountEl {
@@ -223,8 +224,9 @@
 
 
 .snips-paragraph-container {
-  width: 90%;
+  width: 98%;
   display: flex;
+  padding-right: 3px;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: flex-start;
@@ -292,6 +294,7 @@
   border: 0px;
   margin-top: 5px;
   margin-bottom: 0;
+  font-size: 11px;
 }
 
 .btn-grad:hover {
@@ -532,7 +535,7 @@
 /* Clear button styling */
 #snips-clear-btn {
   position: absolute;
-  right: 0;
+  right: 5px;
   bottom: 5px;
   font-size: 10px;
   cursor: pointer;
@@ -541,4 +544,19 @@
 
 #snips-clear-btn:active {
   color: red;
+}
+
+.snips-main .footer {
+  position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 8px;
+    background: inherit;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.snips-main .footer span {
+  font-size: 6px;
+  padding-right: 5px;
 }

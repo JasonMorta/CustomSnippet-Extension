@@ -71,6 +71,7 @@ async function renderList(array) {
     snip.addEventListener("blur", async () => {
       //remove opacity from btns
       del.classList.remove("fade-snip-btn");
+      hide.classList.remove("fade-snip-btn");
       copy.classList.remove("fade-snip-btn");
       up.classList.remove("fade-snip-btn");
       snip.classList.remove("my-snippet-overflow");
@@ -92,7 +93,7 @@ async function renderList(array) {
     let del = document.createElement("img");
     del.src = "./del.png";
     del.alt = "delete";
-    del.title = "Delete";
+    del.title = "Double click to delete";
     del.className = "delete-snip snip-btn";
     //increase the opacity on hover of buttons while faded
     function fader(className) {
@@ -174,7 +175,7 @@ async function renderList(array) {
     up.className = "move-snip snip-btn handle";
     up.alt = "up";
     up.title = "Move up-down";
-    
+
 
     //! HIDE
     let hide = document.createElement("img");
@@ -330,6 +331,7 @@ function saveUserInput() {
       //save to storage
       chrome.storage.sync.set({ [snip.date]: snip })
       textBox.value = "";
+      textBox.style.height = "initial";
       renderList(snippetObject);
     }
     //Store any text that was'nt saved of when popup lost focus
@@ -369,7 +371,7 @@ function addHeading() {
   let textBox = document.querySelector("#snips-textarea");
   let insertHeading = document.querySelector(".add-heading");
   insertHeading.addEventListener("click", () => {
-    textBox.value = "<HeaderName,colorCode>\n";
+    textBox.value = "<HeaderName, colorCode>\n";
     //.replace(/[.*]/, '')
   });
 }
