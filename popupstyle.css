@@ -94,7 +94,7 @@
 .snippet-container {
   position: relative;
   width: 100%;
-
+  margin-bottom: 10px;
   transition: 1s linear;
   display: flex;
   flex-direction: column;
@@ -129,8 +129,7 @@
 
 
 .my-snippet {
-  max-width: 97%;
-  min-width: 370px;
+  width: 98%; 
   margin-left: 1px;
   white-space: pre-line;
   background-color: #2a282b40;
