@@ -245,6 +245,7 @@ function retrieveArrayData() {
 
   //find all snippets by key name
   chrome.storage.sync.get(null, function (snips) {
+    console.log('snips', snips)
     // loop though the storage object,, extract the value object, push it to array
     for (const key in snips) {
       const value = snips[key];
@@ -373,7 +374,7 @@ async function getLastInput() {
 
 //! CSS heading
 //insert CSS heading elements into textarea
-function addHeading() {
+function addHeading() { 
   let textBox = document.querySelector("#snips-textarea");
   let insertHeading = document.querySelector(".add-heading");
   insertHeading.addEventListener("click", () => {
