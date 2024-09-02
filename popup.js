@@ -223,9 +223,15 @@ async function storeArrayData(snip, dateStamp) {
   //save not to local storage, including data
   const uniqueKey = `${dateStamp}`;
   //since storage wont contains any other keys, special keys are not required.(however, a key that uses the same name, will replace existing ones)
-  chrome.storage.sync.set({ [uniqueKey]: snip }).then(() => {
+  try {
+    await chrome.storage.sync.set({ [uniqueKey]: snip });
     console.log("Snip saved");
-  });
+
+    // Re-render list after saving
+    renderList(snippetObject);
+  } catch (error) {
+    console.error("Error saving snippet: ", error);
+  }
 
   //after storing new data, get the array again
   renderList(snippetObject);
